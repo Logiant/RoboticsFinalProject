@@ -1,6 +1,6 @@
 % ----------------------------------------------------------------------
 % Main File   : FinalProject.m
-% Source Files: GetNearestMellon.m, CalcTrajectory.m distance.m
+% Source Files: GetNearestMellon.m, CalcSpline.m distance.m
 % Description : Final Project Template for ME498 - Robotics
 % Author: Logan Beaver, Justin Collins
 % Date: 5/3/2015
@@ -12,6 +12,11 @@ wheelSpacing = 0.5; %m
 numMellons = 5; %number of mellons to smash
 speed = 2; %average robot speed in m/s
 index = 1;
+%simulink variables
+N = 1;
+Bm = 1;
+Jm = 1; J1 = 1;
+m1 = 1; g1 = 1; L1 = 1; B1 = 1;
 
 %calculate a 2xN matrix of mellon (X, Y) positions
 mellonsPos = (rand(2,numMellons) - 0.5) * 2; %between 0 and 1
@@ -34,8 +39,8 @@ for q = 1:numMellons
     mellonsPos(:, nearestIndex) = []; %remove nearest mellon from storage
     numMellons = numMellons - 1; %decrement mellon array size
     %generate the trajectory to the target mellon
-    dPosition = distance(position(0), position(1), targetPos(0), targetPos(1));
-    dTheta = atan2(targetPos(0) - position(0), targetPos(1) - position(1));
+    dPosition = distance(position(1), position(2), targetPos(1), targetPos(2));
+    dTheta = atan2(targetPos(1) - position(1), targetPos(2) - position(2));
     dt = dPosition / speed; %calculate time to keep the average speed
     %convert dTheta to a wheel average difference
     wheelDiff = dTheta*wheelSpacing/wheelRadius; %phiL - phiR
@@ -43,26 +48,45 @@ for q = 1:numMellons
     wheelSum = dPosition * 2 / wheelRadius; %phiL + phiR
     %calculate change in wheel angle from wheel average sum and difference
     deltaLeftPhi = (wheelSum + wheelDiff) / 2;
-    deltaRightPhi = (wheelSum - wheelDif) / 2;
-    %run simulation for left coefficients
+    deltaRightPhi = (wheelSum - wheelDiff) / 2;
+    
+   % set_param('wheelControl', 'StopTime', dt)    
+    
+    %calculate left coefficients
     leftCoeffs = CalcSpline(time,leftPhi,0, ...
-                        time + dt,leftphi + deltaLeftPhi,0);
+                        time + dt,leftPhi + deltaLeftPhi,0);
     
     %run simulation for left wheel
-    %get leftTheta vector from simulink
+    wheelCoeff = leftCoeffs;
+    coeffs = wheelCoeff;
+    sim('wheelControl', [time time+dt]);
     
+    leftTime = thetaActual.Time;
+    leftAngle = thetaActual.Data;
+    
+    %get leftTheta vector from simulink
+
     %calculate right wheel coefficients
     rightCoeffs = CalcSpline(time,rightPhi,0, ...
                         time + dt,rightPhi + deltaRightPhi,0);
     
     %run simulation for right wheel
+    wheelCoeff = rightCoeffs;
+    wheelControl();
     %get rightTheta vector from simulink
     
     %calculate position and orientation from left and right theta values
     
     %update variables
+    leftPhi = leftAngle(length(leftAngle)); %actual value from simulink
+    rightPhi = rightPhi; %actual value from simulink
+    position = targetPos; %calculated from actualPhis
+    figure(2);
+    hold on;
+    plot(leftTime, leftAngle, '-b');
+    plot(time, polyval(leftCoeffs, time), 'or', ...
+        time+dt, polyval(leftCoeffs, time+dt), 'or');
+    
     time = time + dt;
-    leftPhi = leftPhiActual; %actual value from simulink
-    rightPhi = rightPhiActual; %actual value from simulink
-    position = positionActual; %calculated from actualPhis
+
 end

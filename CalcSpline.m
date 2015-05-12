@@ -10,7 +10,7 @@
 % Date: 5/8/2015
 % Bugs: none
 % ----------------------------------------------------------------------
-function coeffs = CalcTrajectory(t0, x0, xdot0, ...
+function coeffs = CalcSpline(t0, x0, xdot0, ...
                                  tf, xf, xdotf)
     
     tMat = [1, t0, t0^2, t0^3;
@@ -21,6 +21,6 @@ function coeffs = CalcTrajectory(t0, x0, xdot0, ...
             
     varMat = [x0; xdot0; xf; xdotf];
     
-    coeffs = tMat \ varMat;
+    coeffs = flip(tMat \ varMat);
     
 end
