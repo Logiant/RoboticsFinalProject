@@ -1,12 +1,14 @@
 % ----------------------------------------------------------------------
 % Main File   : FinalProject.m
-% Source Files: GetNearestMellon.m, CalcTrajectory.m
+% Source Files: GetNearestMellon.m, CalcTrajectory.m distance.m
 % Description : Final Project Template for ME498 - Robotics
 % Author: Logan Beaver, Justin Collins
 % Date: 5/3/2015
 % Bugs: none
 % -------------------------------------------------------------------
 clear; clc;
+wheelRadius = 0.2; %m
+wheelSpacing = 0.5; %m
 numMellons = 5; %number of mellons to smash
 speed = 2; %average robot speed in m/s
 index = 1;
@@ -15,6 +17,8 @@ index = 1;
 mellonsPos = (rand(2,numMellons) - 0.5) * 2; %between 0 and 1
 position = [0; 0]; %Robot position
 time = 0; %initial time is 0
+leftPhi = 0; %the car starts parked, you see
+rightPhi = 0; %the car starts parked, you see
 figure(1);
 clf();
 hold on;
@@ -24,32 +28,41 @@ for i = 1:numMellons
 end
 
 for q = 1:numMellons
-    %generate trajectory
+    %get next target mellon
     nearestIndex = GetNearestMellon(mellonsPos, position); %get nearest
     targetPos = mellonsPos(:, nearestIndex); %target nearest mellon
     mellonsPos(:, nearestIndex) = []; %remove nearest mellon from storage
     numMellons = numMellons - 1; %decrement mellon array size
-    distanceToMellon = distance(position(1), position(2), ...
-        targetPos(1), targetPos(2));
-    dt = distanceToMellon / speed; %calculate time to keep the average speed
-    coeffs = CalcTrajectory(time, position(1), 0, position(2), 0, ...
-        time+dt, targetPos(1), 0, targetPos(2), 0);
+    %generate the trajectory to the target mellon
+    dPosition = distance(position(0), position(1), targetPos(0), targetPos(1));
+    dTheta = atan2(targetPos(0) - position(0), targetPos(1) - position(1));
+    dt = dPosition / speed; %calculate time to keep the average speed
+    %convert dTheta to a wheel average difference
+    wheelDiff = dTheta*wheelSpacing/wheelRadius; %phiL - phiR
+    %convert dPosition to a wheel average sum
+    wheelSum = dPosition * 2 / wheelRadius; %phiL + phiR
+    %calculate change in wheel angle from wheel average sum and difference
+    deltaLeftPhi = (wheelSum + wheelDiff) / 2;
+    deltaRightPhi = (wheelSum - wheelDif) / 2;
+    %run simulation for left coefficients
+    leftCoeffs = CalcSpline(time,leftPhi,0, ...
+                        time + dt,leftphi + deltaLeftPhi,0);
     
+    %run simulation for left wheel
+    %get leftTheta vector from simulink
     
+    %calculate right wheel coefficients
+    rightCoeffs = CalcSpline(time,rightPhi,0, ...
+                        time + dt,rightPhi + deltaRightPhi,0);
     
-    xC = coeffs(:,1); yC = coeffs(:,2);
-    for t = time:0.01:time+dt
-        x(index) = xC(1) + xC(2)*t + xC(3)*t*t + xC(4)*t*t*t;
-        y(index) = yC(1) + yC(2)*t + yC(3)*t*t + yC(4)*t*t*t;
-        tm(index) = t;
-        index = index + 1;
-    end
+    %run simulation for right wheel
+    %get rightTheta vector from simulink
+    
+    %calculate position and orientation from left and right theta values
+    
+    %update variables
     time = time + dt;
-    position = targetPos;
+    leftPhi = leftPhiActual; %actual value from simulink
+    rightPhi = rightPhiActual; %actual value from simulink
+    position = positionActual; %calculated from actualPhis
 end
-
-plot(x, y);
-figure(2);
-plot(tm, x);
-figure(3);
-plot(tm, y);
