@@ -7,19 +7,20 @@
 % Bugs: none
 % -------------------------------------------------------------------
 clear; clc; close all;
-wheelRadius = 0.2; %m
-wheelSpacing = 0.5; %m
-numMellons = 2; %number of mellons to smash
-speed = 2; %average robot speed in m/s
+wheelRadius = 0.2; %in
+wheelSpacing = 0.5; %in
+numMellons = 3; %number of mellons to smash
+speed = 2; %average robot speed in in/s
 index = 1;
 %simulink variables
 N = 1;
-Bm = 1;
-Jm = 1; J1 = 1;
-m1 = 1; g1 = 1; L1 = 1; B1 = 1;
-Jw=1; mc=1; m2=1; m3=1; dc=1;
+Bm = 0.005;
+Jm = 5e-4; %J1 = 1;
+m1 = 0.9/32; %g1 = 1; L1 = 1; 
+B1 = 0.01;
+Jw=1e-3; mc=4.4/32; m2=2.6/32; m3=0.9/32; dc=3.5;
 %stabbing offset
-offset = 0.02; %m
+offset = 0.02; %in
 
 %calculate a 2xN matrix of mellon (X, Y) positions
 mellonsPos = (rand(2,numMellons) - 0.5) * 2; %between 0 and 1
@@ -93,5 +94,21 @@ for k = 1:length(tArray) - 1
     plot(tArray(k:k+1), polyval(rightCoeffs(k,:), tArray(k:k+1)), 'ob');
 end
 
+%%%Fixed DH Params, units of inches and radians
 
+% Origin to the coordinate frame of the cart
+d1=5; alph1=0; %theta and a both variable
 
+% Cart frame to base link
+d2=6.43; a2=0; alph2=pi()/2; %theta variable
+
+% Base link to link 2
+d3=0; alph3=0; a3=2.75; %theta variable
+
+%Link 2 to spear tip
+alph4=0; a4=0; th4=0; %d variable
+
+%Animate motion
+for n=1:length(leftAngle)
+    
+end
