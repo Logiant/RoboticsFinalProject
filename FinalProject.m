@@ -63,17 +63,19 @@ for q = 1:numMellons
     position = targetPos; %calculated from actualPhis
     
     time = time + dt;
+    
+    tArray(q) = time;
 end
 
 %run simulation for left wheel
-coeffs = leftCoeffs(1,:);
+coeffs = leftCoeffs;
 sim('wheelControl', [0 time]);
 %get leftTheta vector from simulink
 leftTime = thetaActual.Time;
 leftAngle = thetaActual.Data;
 
 %run simulation for right wheel
-coeffs = rightCoeffs(1,:);
+coeffs = rightCoeffs;
 sim('wheelControl', [0 time]);
 %get rightTheta vector from simulink
 rightTime = thetaActual.Time;
