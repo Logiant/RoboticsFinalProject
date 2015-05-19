@@ -41,60 +41,44 @@ for q = 1:numMellons
     dPosition = distance(position(1), position(2), targetPos(1), targetPos(2));
     dTheta = atan2(targetPos(1) - position(1), targetPos(2) - position(2));
     dt = dPosition / speed; %calculate time to keep the average speed
+    
     %convert dTheta to a wheel average difference
     wheelDiff = dTheta*wheelSpacing/wheelRadius; %phiL - phiR
     %convert dPosition to a wheel average sum
     wheelSum = dPosition * 2 / wheelRadius; %phiL + phiR
+    
     %calculate change in wheel angle from wheel average sum and difference
     deltaLeftPhi = (wheelSum + wheelDiff) / 2;
     deltaRightPhi = (wheelSum - wheelDiff) / 2;
     
-   % set_param('wheelControl', 'StopTime', dt)    
-    
     %calculate left coefficients
-    leftCoeffs = CalcSpline(time,leftPhi,0, ...
-                        time + dt,leftPhi + deltaLeftPhi,0);
-    
-    %run simulation for left wheel
-    wCoeff = leftCoeffs;
-    thetaIC = leftPhi;
-    sim('wheel2', [time time+dt]);
-    %get leftTheta vector from simulink
-    leftTime = thetaActual.Time;
-    leftAngle = thetaActual.Data;
-    
+    leftCoeffs(q,:) = CalcSpline(time,leftPhi,0, ...
+        time + dt,leftPhi + deltaLeftPhi,0);
     %calculate right wheel coefficients
-    rightCoeffs = CalcSpline(time,rightPhi,0, ...
-                        time + dt,rightPhi + deltaRightPhi,0);
-    %run simulation for right wheel
-    wCoeff = rightCoeffs;
-    sim('wheel1', [time time+dt]);
-    %get rightTheta vector from simulink
-    rightTime = thetaActual.Time;
-    rightAngle = thetaActual.Data;
-    %calculate position and orientation from left and right theta values
-    for c = 1:1
-     %   dr = r/2*(theta1+theta2);
-     %   dTheta = r/R*(theta1-theta2)/2;
-    end
-    xf = 0;
-    yf = 0;
-    thetaf = 0;
-    
+    rightCoeffs(q,:) = CalcSpline(time,rightPhi,0, ...
+        time + dt,rightPhi + deltaRightPhi,0);
     %update variables
-    leftPhi = leftAngle(length(leftAngle)); %actual value from simulink
-    rightPhi = rightAngle(length(rightAngle)); %actual value from simulink
+    leftPhi = polyval(leftCoeffs(q,:), time + dt); %actual value from simulink
+    rightPhi = polyval(rightCoeffs(q,:), time + dt); %actual value from simulink
     position = targetPos; %calculated from actualPhis
-    figure(2);
-    hold on;
-    plot(leftTime, leftAngle, '-b');
-    plot(time, polyval(leftCoeffs, time), 'or', ...
-        time+dt, polyval(leftCoeffs, time+dt), '*r');
-    
-%    plot(rightTime, rightAngle, '-k');
-%    plot(time, polyval(rightCoeffs, time), 'og', ...
-%        time+dt, polyval(rightCoeffs, time+dt), 'og');
     
     time = time + dt;
-
 end
+
+%run simulation for left wheel
+coeffs = leftCoeffs(1,:);
+sim('wheelControl', [0 time]);
+%get leftTheta vector from simulink
+leftTime = thetaActual.Time;
+leftAngle = thetaActual.Data;
+
+%run simulation for right wheel
+coeffs = rightCoeffs(1,:);
+sim('wheelControl', [0 time]);
+%get rightTheta vector from simulink
+rightTime = thetaActual.Time;
+rightAngle = thetaActual.Data;
+
+figure(2);
+plot(leftTime, leftAngle, '-k', rightTime, rightAngle, '-b');
+
