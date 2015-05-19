@@ -16,7 +16,7 @@ function coeffs = CalcSpline(t0, x0, xdot0, ...
     tMat = [1, t0, t0^2, t0^3;
             0, 1, 2*t0, 3*t0^2;
             1, tf, tf^2, tf^3;
-            0, 1, 2*tf, 3*tf^2]
+            0, 1, 2*tf, 3*tf^2];
    
             
     varMat = [x0; xdot0; xf; xdotf];

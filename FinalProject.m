@@ -6,10 +6,10 @@
 % Date: 5/3/2015
 % Bugs: none
 % -------------------------------------------------------------------
-clear; clc;
+clear; clc; close all;
 wheelRadius = 0.2; %m
 wheelSpacing = 0.5; %m
-numMellons = 5; %number of mellons to smash
+numMellons = 2; %number of mellons to smash
 speed = 2; %average robot speed in m/s
 index = 1;
 %simulink variables
@@ -26,13 +26,11 @@ time = 0; %initial time is 0
 leftPhi = 0; %the car starts parked, you see
 rightPhi = 0; %the car starts parked, you see
 figure(1);
-clf();
 hold on;
 plot(position(1), position(2), 'or');
 for i = 1:numMellons
     plot(mellonsPos(1,i), mellonsPos(2,i), '*g');
 end
-
 for q = 1:numMellons
     %get next target mellon
     nearestIndex = GetNearestMellon(mellonsPos, position); %get nearest
@@ -58,35 +56,44 @@ for q = 1:numMellons
                         time + dt,leftPhi + deltaLeftPhi,0);
     
     %run simulation for left wheel
-    wheelCoeff = leftCoeffs;
-    wCoeff = wheelCoeff;
-    sim('wheel1');
-    
+    wCoeff = leftCoeffs;
+    thetaIC = leftPhi;
+    sim('wheel2', [time time+dt]);
+    %get leftTheta vector from simulink
     leftTime = thetaActual.Time;
     leftAngle = thetaActual.Data;
     
-    %get leftTheta vector from simulink
-
     %calculate right wheel coefficients
     rightCoeffs = CalcSpline(time,rightPhi,0, ...
                         time + dt,rightPhi + deltaRightPhi,0);
-    
     %run simulation for right wheel
     wCoeff = rightCoeffs;
-    wheel1();
+    sim('wheel1', [time time+dt]);
     %get rightTheta vector from simulink
-    
+    rightTime = thetaActual.Time;
+    rightAngle = thetaActual.Data;
     %calculate position and orientation from left and right theta values
+    for c = 1:1
+     %   dr = r/2*(theta1+theta2);
+     %   dTheta = r/R*(theta1-theta2)/2;
+    end
+    xf = 0;
+    yf = 0;
+    thetaf = 0;
     
     %update variables
     leftPhi = leftAngle(length(leftAngle)); %actual value from simulink
-    rightPhi = rightPhi; %actual value from simulink
+    rightPhi = rightAngle(length(rightAngle)); %actual value from simulink
     position = targetPos; %calculated from actualPhis
     figure(2);
     hold on;
     plot(leftTime, leftAngle, '-b');
     plot(time, polyval(leftCoeffs, time), 'or', ...
-        time+dt, polyval(leftCoeffs, time+dt), 'or');
+        time+dt, polyval(leftCoeffs, time+dt), '*r');
+    
+%    plot(rightTime, rightAngle, '-k');
+%    plot(time, polyval(rightCoeffs, time), 'og', ...
+%        time+dt, polyval(rightCoeffs, time+dt), 'og');
     
     time = time + dt;
 
