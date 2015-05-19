@@ -17,6 +17,7 @@ N = 1;
 Bm = 1;
 Jm = 1; J1 = 1;
 m1 = 1; g1 = 1; L1 = 1; B1 = 1;
+Jw=1; mc=1; m2=1; m3=1; dc=1;
 
 %calculate a 2xN matrix of mellon (X, Y) positions
 mellonsPos = (rand(2,numMellons) - 0.5) * 2; %between 0 and 1
@@ -58,8 +59,8 @@ for q = 1:numMellons
     
     %run simulation for left wheel
     wheelCoeff = leftCoeffs;
-    coeffs = wheelCoeff;
-    sim('wheelControl', [time time+dt]);
+    wCoeff = wheelCoeff;
+    sim('wheel1');
     
     leftTime = thetaActual.Time;
     leftAngle = thetaActual.Data;
@@ -71,8 +72,8 @@ for q = 1:numMellons
                         time + dt,rightPhi + deltaRightPhi,0);
     
     %run simulation for right wheel
-    wheelCoeff = rightCoeffs;
-    wheelControl();
+    wCoeff = rightCoeffs;
+    wheel1();
     %get rightTheta vector from simulink
     
     %calculate position and orientation from left and right theta values
