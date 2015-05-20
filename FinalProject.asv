@@ -13,7 +13,7 @@ numMellons = 5; %number of mellons to smash
 speed = 2; %average robot speed in in/s
 index = 1;
 %simulink variables
-kp = 200; ki = 15; kd = 75;
+kp = 200; ki = 5; kd = 10;
 N = 1;
 Bm = 0.005;
 Jm = 5e-4; %J1 = 1;
@@ -166,6 +166,5 @@ for n=1:min(length(leftAngle), length(rightAngle))
         pause(.1);
     end
 end
-
-beep
+sound(ones(
 %orientation*180/pi
