@@ -9,15 +9,14 @@
 clear; clc; close all;
 wheelRadius = 0.2; %in
 wheelSpacing = 0.5; %in
-numMellons = 1; %number of mellons to smash
+numMellons = 3; %number of mellons to smash
 speed = 2; %average robot speed in in/s
 index = 1;
 %simulink variables
-kp = 125;ki = 25;kd = 10;
 N = 1;
 Bm = 0.005;
 Jm = 5e-4; %J1 = 1;
-m1 = 0.9/32; %g1 = 1; L1 = 1;
+m1 = 0.9/32; %g1 = 1; L1 = 1; 
 B1 = 0.01;
 Jw=1e-3; mc=4.4/32; m2=2.6/32; m3=0.9/32; dc=3.5;
 %stabbing offset
@@ -25,7 +24,6 @@ offset = 0.02; %in
 
 %calculate a 2xN matrix of mellon (X, Y) positions
 mellonsPos = (rand(2,numMellons) - 0.5) * 2; %between -1 and 1
-mellonsPos = [1; 1]
 mellonStorage = mellonsPos;
 position = [0; 0]; %Robot position
 orientation = 0; %Robot rotation, radians
@@ -45,10 +43,10 @@ for q = 1:numMellons
     mellonsPos(:, nearestIndex) = []; %remove nearest mellon from storage
     numMellons = numMellons - 1; %decrement mellon array size
     %generate the trajectory to the target mellon
-    dPosition = distance(position(1), position(2), targetPos(1), targetPos(2));
-    
-    dTheta = pi;
+    dPosition = distance(position(1), position(2), targetPos(1), targetPos(2)) - offset;
+    dTheta = atan2(targetPos(1) - position(1), targetPos(2) - position(2));
     dt = abs(dPosition / speed); %calculate time to keep the average speed
+    
     %convert dTheta to a wheel average difference
     wheelDiff = dTheta*wheelSpacing/wheelRadius; %phiL - phiR
     %convert dPosition to a wheel average sum
@@ -71,11 +69,11 @@ for q = 1:numMellons
     
     time = time + dt;
     
-    tArray(q) = time;
+    tArray(q) = time;   
 end
 
 %run simulation for left wheel
-wCoeff = leftCoeffs
+wCoeff = leftCoeffs;
 sim('wheel1', [0 time]);
 %get leftTheta vector from simulink
 leftTime = thetaActual.Time;
@@ -113,14 +111,6 @@ d3=0; alph3=0; a3=2.75; %theta variable
 alph4=0; a4=0; th4=0; %d variable
 
 %Animate motion
-figure(1); clf;
-axis([-1 1 -1 1]);
-axis manual;
-hold on;
-for i = 1:length(tArray) - 1
-    plot(mellonStorage(1,i), mellonStorage(2,i), '*g');
-end
-position = [0;0];
 for n=1:min(length(leftAngle), length(rightAngle))
     %calculate new robot position
     if n > 1
@@ -132,8 +122,10 @@ for n=1:min(length(leftAngle), length(rightAngle))
         dy = dR * sin(orientation + dPhi/2);
         orientation = orientation + dPhi;
         position = [position(1) + dx; position(2) + dy];
-        plot(position(1), position(2), '.r');
-        
+        figure(1); clf;
+        axis man;
+        axis([-1 1 -1 1]);
+        plot(position(1), position(2), 'or');
         pause(.1);
     end
 end

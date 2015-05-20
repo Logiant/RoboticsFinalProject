@@ -19,7 +19,7 @@
 
 /* Variable Definitions */
 static real_T _sfTime_;
-static const char * c2_debug_family_names[12] = { "n", "a2", "ad", "ad2",
+static const char * c2_debug_family_names[13] = { "n", "m", "a2", "ad", "ad2",
   "nargin", "nargout", "array", "times", "t", "td", "dtd", "d2td" };
 
 /* Function Declarations */
@@ -48,9 +48,7 @@ static void c2_sf_marshallIn(void *chartInstanceVoid, const mxArray
   *c2_mxArrayInData, const char_T *c2_varName, void *c2_outData);
 static const mxArray *c2_b_sf_marshallOut(void *chartInstanceVoid, void
   *c2_inData);
-static const mxArray *c2_c_sf_marshallOut(void *chartInstanceVoid, void
-  *c2_inData);
-static const mxArray *c2_d_sf_marshallOut(void *chartInstanceVoid, real_T
+static const mxArray *c2_c_sf_marshallOut(void *chartInstanceVoid, real_T
   c2_inData_data[], int32_T c2_inData_sizes[2]);
 static void c2_c_emlrt_marshallIn(SFc2_wheel1InstanceStruct *chartInstance,
   const mxArray *c2_u, const emlrtMsgIdentifier *c2_parentId, real_T c2_y_data[],
@@ -58,7 +56,7 @@ static void c2_c_emlrt_marshallIn(SFc2_wheel1InstanceStruct *chartInstance,
 static void c2_b_sf_marshallIn(void *chartInstanceVoid, const mxArray
   *c2_mxArrayInData, const char_T *c2_varName, real_T c2_outData_data[], int32_T
   c2_outData_sizes[2]);
-static const mxArray *c2_e_sf_marshallOut(void *chartInstanceVoid, real_T
+static const mxArray *c2_d_sf_marshallOut(void *chartInstanceVoid, real_T
   c2_inData_data[], int32_T c2_inData_sizes[2]);
 static void c2_d_emlrt_marshallIn(SFc2_wheel1InstanceStruct *chartInstance,
   const mxArray *c2_u, const emlrtMsgIdentifier *c2_parentId, real_T c2_y_data[],
@@ -66,20 +64,20 @@ static void c2_d_emlrt_marshallIn(SFc2_wheel1InstanceStruct *chartInstance,
 static void c2_c_sf_marshallIn(void *chartInstanceVoid, const mxArray
   *c2_mxArrayInData, const char_T *c2_varName, real_T c2_outData_data[], int32_T
   c2_outData_sizes[2]);
-static const mxArray *c2_f_sf_marshallOut(void *chartInstanceVoid, void
-  *c2_inData);
 static void c2_e_emlrt_marshallIn(SFc2_wheel1InstanceStruct *chartInstance,
   const mxArray *c2_u, const emlrtMsgIdentifier *c2_parentId, real_T c2_y[4]);
 static void c2_d_sf_marshallIn(void *chartInstanceVoid, const mxArray
   *c2_mxArrayInData, const char_T *c2_varName, void *c2_outData);
-static const mxArray *c2_g_sf_marshallOut(void *chartInstanceVoid, real_T
-  c2_inData_data[], int32_T *c2_inData_sizes);
+static const mxArray *c2_e_sf_marshallOut(void *chartInstanceVoid, void
+  *c2_inData);
+static const mxArray *c2_f_sf_marshallOut(void *chartInstanceVoid, real_T
+  c2_inData_data[], int32_T c2_inData_sizes[2]);
 static void c2_f_emlrt_marshallIn(SFc2_wheel1InstanceStruct *chartInstance,
   const mxArray *c2_u, const emlrtMsgIdentifier *c2_parentId, real_T c2_y_data[],
-  int32_T *c2_y_sizes);
+  int32_T c2_y_sizes[2]);
 static void c2_e_sf_marshallIn(void *chartInstanceVoid, const mxArray
   *c2_mxArrayInData, const char_T *c2_varName, real_T c2_outData_data[], int32_T
-  *c2_outData_sizes);
+  c2_outData_sizes[2]);
 static void c2_info_helper(const mxArray **c2_info);
 static const mxArray *c2_emlrt_marshallOut(const char * c2_u);
 static const mxArray *c2_b_emlrt_marshallOut(const uint32_T c2_u);
@@ -92,7 +90,7 @@ static real_T c2_polyval(SFc2_wheel1InstanceStruct *chartInstance, real_T
 static void c2_trim_leading_zeros(SFc2_wheel1InstanceStruct *chartInstance,
   real_T c2_x_data[], int32_T c2_x_sizes[2], real_T c2_y_data[], int32_T
   c2_y_sizes[2]);
-static const mxArray *c2_h_sf_marshallOut(void *chartInstanceVoid, void
+static const mxArray *c2_g_sf_marshallOut(void *chartInstanceVoid, void
   *c2_inData);
 static int32_T c2_g_emlrt_marshallIn(SFc2_wheel1InstanceStruct *chartInstance,
   const mxArray *c2_u, const emlrtMsgIdentifier *c2_parentId);
@@ -217,30 +215,26 @@ static void finalize_c2_wheel1(SFc2_wheel1InstanceStruct *chartInstance)
 static void sf_gateway_c2_wheel1(SFc2_wheel1InstanceStruct *chartInstance)
 {
   int32_T c2_i0;
-  int32_T c2_i1;
+  real_T *c2_times;
   real_T *c2_td;
   real_T *c2_t;
   real_T *c2_dtd;
   real_T *c2_d2td;
-  real_T (*c2_times)[2];
-  real_T (*c2_array)[8];
+  real_T (*c2_array)[4];
   c2_d2td = (real_T *)ssGetOutputPortSignal(chartInstance->S, 3);
   c2_dtd = (real_T *)ssGetOutputPortSignal(chartInstance->S, 2);
   c2_t = (real_T *)ssGetInputPortSignal(chartInstance->S, 2);
   c2_td = (real_T *)ssGetOutputPortSignal(chartInstance->S, 1);
-  c2_times = (real_T (*)[2])ssGetInputPortSignal(chartInstance->S, 1);
-  c2_array = (real_T (*)[8])ssGetInputPortSignal(chartInstance->S, 0);
+  c2_times = (real_T *)ssGetInputPortSignal(chartInstance->S, 1);
+  c2_array = (real_T (*)[4])ssGetInputPortSignal(chartInstance->S, 0);
   _SFD_SYMBOL_SCOPE_PUSH(0U, 0U);
   _sfTime_ = sf_get_time(chartInstance->S);
   _SFD_CC_CALL(CHART_ENTER_SFUNCTION_TAG, 0U, chartInstance->c2_sfEvent);
-  for (c2_i0 = 0; c2_i0 < 8; c2_i0++) {
+  for (c2_i0 = 0; c2_i0 < 4; c2_i0++) {
     _SFD_DATA_RANGE_CHECK((*c2_array)[c2_i0], 0U);
   }
 
-  for (c2_i1 = 0; c2_i1 < 2; c2_i1++) {
-    _SFD_DATA_RANGE_CHECK((*c2_times)[c2_i1], 1U);
-  }
-
+  _SFD_DATA_RANGE_CHECK(*c2_times, 1U);
   chartInstance->c2_sfEvent = CALL_EVENT;
   c2_chartstep_c2_wheel1(chartInstance);
   _SFD_SYMBOL_SCOPE_POP();
@@ -255,14 +249,15 @@ static void sf_gateway_c2_wheel1(SFc2_wheel1InstanceStruct *chartInstance)
 static void c2_chartstep_c2_wheel1(SFc2_wheel1InstanceStruct *chartInstance)
 {
   real_T c2_hoistedGlobal;
-  int32_T c2_i2;
-  real_T c2_array[8];
-  int32_T c2_i3;
-  real_T c2_times[2];
+  real_T c2_b_hoistedGlobal;
+  int32_T c2_i1;
+  real_T c2_array[4];
+  real_T c2_times;
   real_T c2_t;
-  uint32_T c2_debug_family_var_map[12];
-  int32_T c2_n_sizes;
-  real_T c2_n_data[2];
+  uint32_T c2_debug_family_var_map[13];
+  int32_T c2_n_sizes[2];
+  real_T c2_n_data[1];
+  real_T c2_m[2];
   real_T c2_a2[4];
   int32_T c2_ad_sizes[2];
   real_T c2_ad_data[3];
@@ -274,312 +269,253 @@ static void c2_chartstep_c2_wheel1(SFc2_wheel1InstanceStruct *chartInstance)
   real_T c2_td;
   real_T c2_dtd;
   real_T c2_d2td;
-  int32_T c2_i4;
-  boolean_T c2_x[2];
-  int32_T c2_idx;
-  static int32_T c2_iv0[1] = { 2 };
-
-  int32_T c2_ii_sizes;
+  boolean_T c2_x;
+  boolean_T c2_b_x;
+  int32_T c2_ii_sizes[2];
   int32_T c2_ii;
   int32_T c2_b_ii;
-  int32_T c2_a;
-  int32_T c2_b_a;
-  int32_T c2_ii_data[2];
+  int32_T c2_ii_data[1];
+  int32_T c2_c_ii;
+  int32_T c2_d_ii;
+  int32_T c2_b_n;
+  int32_T c2_c_n;
+  int32_T c2_loop_ub;
+  int32_T c2_i2;
   boolean_T c2_b0;
   boolean_T c2_b1;
-  boolean_T c2_b2;
+  int32_T c2_i3;
+  int32_T c2_i4;
   int32_T c2_i5;
-  int32_T c2_tmp_sizes;
-  int32_T c2_loop_ub;
-  int32_T c2_i6;
-  int32_T c2_tmp_data[2];
-  int32_T c2_b_ii_sizes;
-  int32_T c2_b_loop_ub;
-  int32_T c2_i7;
-  int32_T c2_b_ii_data[2];
-  int32_T c2_c_loop_ub;
-  int32_T c2_i8;
-  int32_T c2_d_loop_ub;
-  int32_T c2_i9;
-  int32_T c2_x_sizes;
-  int32_T c2_e_loop_ub;
-  int32_T c2_i10;
-  real_T c2_x_data[2];
-  real_T c2_b_n;
-  int32_T c2_c_n;
-  int32_T c2_i11;
-  int32_T c2_i12;
   real_T c2_p[4];
-  real_T c2_b_x;
+  real_T c2_c_x;
   int32_T c2_k;
   real_T c2_b_k;
-  int32_T c2_i13;
+  int32_T c2_i6;
   real_T c2_b_a2[4];
-  int32_T c2_b_tmp_sizes[2];
-  real_T c2_b_tmp_data[3];
+  int32_T c2_tmp_sizes[2];
+  real_T c2_tmp_data[3];
   int32_T c2_ad;
   int32_T c2_b_ad;
-  int32_T c2_f_loop_ub;
-  int32_T c2_i14;
+  int32_T c2_b_loop_ub;
+  int32_T c2_i7;
   int32_T c2_b_ad_sizes[2];
   int32_T c2_c_ad;
   int32_T c2_d_ad;
-  int32_T c2_g_loop_ub;
-  int32_T c2_i15;
+  int32_T c2_c_loop_ub;
+  int32_T c2_i8;
   real_T c2_b_ad_data[3];
   int32_T c2_u_sizes[2];
   int32_T c2_u;
   int32_T c2_b_u;
-  int32_T c2_h_loop_ub;
-  int32_T c2_i16;
+  int32_T c2_d_loop_ub;
+  int32_T c2_i9;
   real_T c2_u_data[3];
   int32_T c2_b_u_sizes[2];
   int32_T c2_c_u;
   int32_T c2_d_u;
-  int32_T c2_i_loop_ub;
-  int32_T c2_i17;
+  int32_T c2_e_loop_ub;
+  int32_T c2_i10;
   real_T c2_b_u_data[3];
-  int32_T c2_c_tmp_sizes[2];
-  real_T c2_c_tmp_data[2];
+  int32_T c2_b_tmp_sizes[2];
+  real_T c2_b_tmp_data[2];
   int32_T c2_ad2;
   int32_T c2_b_ad2;
-  int32_T c2_j_loop_ub;
-  int32_T c2_i18;
+  int32_T c2_f_loop_ub;
+  int32_T c2_i11;
   int32_T c2_d_n;
-  int32_T c2_i19;
+  int32_T c2_i12;
   int32_T c2_c_k;
-  boolean_T c2_b3;
+  boolean_T c2_b2;
   int32_T c2_b_ad2_sizes[2];
   int32_T c2_c_ad2;
   int32_T c2_d_ad2;
-  int32_T c2_k_loop_ub;
-  int32_T c2_i20;
+  int32_T c2_g_loop_ub;
+  int32_T c2_i13;
   real_T c2_b_ad2_data[2];
+  real_T *c2_b_times;
   real_T *c2_b_t;
   real_T *c2_b_td;
   real_T *c2_b_dtd;
   real_T *c2_b_d2td;
-  real_T (*c2_b_times)[2];
-  real_T (*c2_b_array)[8];
-  boolean_T exitg1;
-  boolean_T guard1 = false;
+  real_T (*c2_b_array)[4];
   c2_b_d2td = (real_T *)ssGetOutputPortSignal(chartInstance->S, 3);
   c2_b_dtd = (real_T *)ssGetOutputPortSignal(chartInstance->S, 2);
   c2_b_t = (real_T *)ssGetInputPortSignal(chartInstance->S, 2);
   c2_b_td = (real_T *)ssGetOutputPortSignal(chartInstance->S, 1);
-  c2_b_times = (real_T (*)[2])ssGetInputPortSignal(chartInstance->S, 1);
-  c2_b_array = (real_T (*)[8])ssGetInputPortSignal(chartInstance->S, 0);
+  c2_b_times = (real_T *)ssGetInputPortSignal(chartInstance->S, 1);
+  c2_b_array = (real_T (*)[4])ssGetInputPortSignal(chartInstance->S, 0);
   _SFD_CC_CALL(CHART_ENTER_DURING_FUNCTION_TAG, 0U, chartInstance->c2_sfEvent);
-  c2_hoistedGlobal = *c2_b_t;
-  for (c2_i2 = 0; c2_i2 < 8; c2_i2++) {
-    c2_array[c2_i2] = (*c2_b_array)[c2_i2];
+  c2_hoistedGlobal = *c2_b_times;
+  c2_b_hoistedGlobal = *c2_b_t;
+  for (c2_i1 = 0; c2_i1 < 4; c2_i1++) {
+    c2_array[c2_i1] = (*c2_b_array)[c2_i1];
   }
 
-  for (c2_i3 = 0; c2_i3 < 2; c2_i3++) {
-    c2_times[c2_i3] = (*c2_b_times)[c2_i3];
-  }
-
-  c2_t = c2_hoistedGlobal;
-  _SFD_SYMBOL_SCOPE_PUSH_EML(0U, 12U, 13U, c2_debug_family_names,
+  c2_times = c2_hoistedGlobal;
+  c2_t = c2_b_hoistedGlobal;
+  _SFD_SYMBOL_SCOPE_PUSH_EML(0U, 13U, 14U, c2_debug_family_names,
     c2_debug_family_var_map);
   _SFD_SYMBOL_SCOPE_ADD_EML_DYN_IMPORTABLE(c2_n_data, (const int32_T *)
-    &c2_n_sizes, NULL, 0, -1, (void *)c2_g_sf_marshallOut, (void *)
+    &c2_n_sizes, NULL, 0, -1, (void *)c2_f_sf_marshallOut, (void *)
     c2_e_sf_marshallIn);
-  _SFD_SYMBOL_SCOPE_ADD_EML_IMPORTABLE(c2_a2, 1U, c2_f_sf_marshallOut,
+  _SFD_SYMBOL_SCOPE_ADD_EML(c2_m, 1U, c2_e_sf_marshallOut);
+  _SFD_SYMBOL_SCOPE_ADD_EML_IMPORTABLE(c2_a2, 2U, c2_b_sf_marshallOut,
     c2_d_sf_marshallIn);
   _SFD_SYMBOL_SCOPE_ADD_EML_DYN_IMPORTABLE(c2_ad_data, (const int32_T *)
-    &c2_ad_sizes, NULL, 0, 2, (void *)c2_e_sf_marshallOut, (void *)
+    &c2_ad_sizes, NULL, 0, 3, (void *)c2_d_sf_marshallOut, (void *)
     c2_c_sf_marshallIn);
   _SFD_SYMBOL_SCOPE_ADD_EML_DYN_IMPORTABLE(c2_ad2_data, (const int32_T *)
-    &c2_ad2_sizes, NULL, 0, 3, (void *)c2_d_sf_marshallOut, (void *)
+    &c2_ad2_sizes, NULL, 0, 4, (void *)c2_c_sf_marshallOut, (void *)
     c2_b_sf_marshallIn);
   _SFD_SYMBOL_SCOPE_ADD_EML_IMPORTABLE(&c2_n, MAX_uint32_T, c2_sf_marshallOut,
     c2_sf_marshallIn);
-  _SFD_SYMBOL_SCOPE_ADD_EML_IMPORTABLE(&c2_nargin, 4U, c2_sf_marshallOut,
+  _SFD_SYMBOL_SCOPE_ADD_EML_IMPORTABLE(&c2_nargin, 5U, c2_sf_marshallOut,
     c2_sf_marshallIn);
-  _SFD_SYMBOL_SCOPE_ADD_EML_IMPORTABLE(&c2_nargout, 5U, c2_sf_marshallOut,
+  _SFD_SYMBOL_SCOPE_ADD_EML_IMPORTABLE(&c2_nargout, 6U, c2_sf_marshallOut,
     c2_sf_marshallIn);
-  _SFD_SYMBOL_SCOPE_ADD_EML(c2_array, 6U, c2_c_sf_marshallOut);
-  _SFD_SYMBOL_SCOPE_ADD_EML(c2_times, 7U, c2_b_sf_marshallOut);
-  _SFD_SYMBOL_SCOPE_ADD_EML(&c2_t, 8U, c2_sf_marshallOut);
-  _SFD_SYMBOL_SCOPE_ADD_EML_IMPORTABLE(&c2_td, 9U, c2_sf_marshallOut,
+  _SFD_SYMBOL_SCOPE_ADD_EML(c2_array, 7U, c2_b_sf_marshallOut);
+  _SFD_SYMBOL_SCOPE_ADD_EML(&c2_times, 8U, c2_sf_marshallOut);
+  _SFD_SYMBOL_SCOPE_ADD_EML(&c2_t, 9U, c2_sf_marshallOut);
+  _SFD_SYMBOL_SCOPE_ADD_EML_IMPORTABLE(&c2_td, 10U, c2_sf_marshallOut,
     c2_sf_marshallIn);
-  _SFD_SYMBOL_SCOPE_ADD_EML_IMPORTABLE(&c2_dtd, 10U, c2_sf_marshallOut,
+  _SFD_SYMBOL_SCOPE_ADD_EML_IMPORTABLE(&c2_dtd, 11U, c2_sf_marshallOut,
     c2_sf_marshallIn);
-  _SFD_SYMBOL_SCOPE_ADD_EML_IMPORTABLE(&c2_d2td, 11U, c2_sf_marshallOut,
+  _SFD_SYMBOL_SCOPE_ADD_EML_IMPORTABLE(&c2_d2td, 12U, c2_sf_marshallOut,
     c2_sf_marshallIn);
   CV_EML_FCN(0, 0);
   _SFD_EML_CALL(0U, chartInstance->c2_sfEvent, 2);
-  for (c2_i4 = 0; c2_i4 < 2; c2_i4++) {
-    c2_x[c2_i4] = (c2_t <= c2_times[c2_i4]);
-  }
-
-  c2_idx = 0;
-  c2_ii_sizes = c2_iv0[0];
-  c2_ii = 1;
-  exitg1 = false;
-  while ((exitg1 == false) && (c2_ii < 3)) {
-    c2_b_ii = c2_ii;
-    guard1 = false;
-    if (c2_x[c2_b_ii - 1]) {
-      c2_a = c2_idx;
-      c2_b_a = c2_a + 1;
-      c2_idx = c2_b_a;
-      c2_ii_data[c2_idx - 1] = c2_b_ii;
-      if (c2_idx >= 2) {
-        exitg1 = true;
-      } else {
-        guard1 = true;
-      }
-    } else {
-      guard1 = true;
-    }
-
-    if (guard1 == true) {
-      c2_ii++;
-    }
-  }
-
-  c2_b0 = (1 > c2_idx);
-  c2_b1 = c2_b0;
-  c2_b2 = c2_b1;
-  if (c2_b2) {
-    c2_i5 = 0;
+  c2_x = (c2_t <= c2_times);
+  c2_b_x = c2_x;
+  if (c2_b_x) {
+    c2_ii_sizes[0] = 1;
+    c2_ii_sizes[1] = 1;
+    c2_ii = c2_ii_sizes[0];
+    c2_b_ii = c2_ii_sizes[1];
+    c2_ii_data[0] = 1;
   } else {
-    c2_i5 = _SFD_EML_ARRAY_BOUNDS_CHECK("", c2_idx, 1, 2, 0, 0);
+    c2_ii_sizes[0] = 0;
+    c2_ii_sizes[1] = 0;
+    c2_c_ii = c2_ii_sizes[0];
+    c2_d_ii = c2_ii_sizes[1];
   }
 
-  c2_tmp_sizes = c2_i5;
-  c2_loop_ub = c2_i5 - 1;
-  for (c2_i6 = 0; c2_i6 <= c2_loop_ub; c2_i6++) {
-    c2_tmp_data[c2_i6] = 1 + c2_i6;
-  }
-
-  _SFD_VECTOR_VECTOR_INDEX_CHECK(2, 1, 1, c2_tmp_sizes);
-  c2_b_ii_sizes = c2_tmp_sizes;
-  c2_b_loop_ub = c2_tmp_sizes - 1;
-  for (c2_i7 = 0; c2_i7 <= c2_b_loop_ub; c2_i7++) {
-    c2_b_ii_data[c2_i7] = c2_ii_data[c2_tmp_data[c2_i7] - 1];
-  }
-
-  c2_ii_sizes = c2_b_ii_sizes;
-  c2_c_loop_ub = c2_b_ii_sizes - 1;
-  for (c2_i8 = 0; c2_i8 <= c2_c_loop_ub; c2_i8++) {
-    c2_ii_data[c2_i8] = c2_b_ii_data[c2_i8];
-  }
-
-  c2_n_sizes = c2_ii_sizes;
-  c2_d_loop_ub = c2_ii_sizes - 1;
-  for (c2_i9 = 0; c2_i9 <= c2_d_loop_ub; c2_i9++) {
-    c2_n_data[c2_i9] = (real_T)c2_ii_data[c2_i9];
+  c2_n_sizes[0] = c2_ii_sizes[0];
+  c2_n_sizes[1] = c2_ii_sizes[1];
+  c2_b_n = c2_n_sizes[0];
+  c2_c_n = c2_n_sizes[1];
+  c2_loop_ub = c2_ii_sizes[0] * c2_ii_sizes[1] - 1;
+  for (c2_i2 = 0; c2_i2 <= c2_loop_ub; c2_i2++) {
+    c2_n_data[c2_i2] = (real_T)c2_ii_data[c2_i2];
   }
 
   _SFD_SYMBOL_SWITCH(0U, 0U);
   _SFD_EML_CALL(0U, chartInstance->c2_sfEvent, 3);
-  c2_x_sizes = c2_n_sizes;
-  c2_e_loop_ub = c2_n_sizes - 1;
-  for (c2_i10 = 0; c2_i10 <= c2_e_loop_ub; c2_i10++) {
-    c2_x_data[c2_i10] = c2_n_data[c2_i10];
-  }
-
-  c2_b_n = (real_T)c2_x_sizes;
-  if (CV_EML_IF(0, 1, 0, c2_b_n == 0.0)) {
+  c2_b0 = (c2_n_sizes[0] == 0);
+  c2_b1 = (c2_n_sizes[1] == 0);
+  if (CV_EML_IF(0, 1, 0, c2_b0 || c2_b1)) {
     _SFD_EML_CALL(0U, chartInstance->c2_sfEvent, 4);
-    c2_n = 2.0;
-    _SFD_SYMBOL_SWITCH(0U, 4U);
+    c2_n = 1.0;
+    _SFD_SYMBOL_SWITCH(0U, 5U);
   } else {
     _SFD_EML_CALL(0U, chartInstance->c2_sfEvent, 6);
-    (real_T)_SFD_EML_ARRAY_BOUNDS_CHECK("n", 1, 1, c2_n_sizes, 1, 0);
-    c2_n = c2_n_data[0];
-    _SFD_SYMBOL_SWITCH(0U, 4U);
+    (real_T)_SFD_EML_ARRAY_BOUNDS_CHECK("n", 1, 1, c2_n_sizes[0] * c2_n_sizes[1],
+      1, 0);
+    c2_n = 1.0;
+    _SFD_SYMBOL_SWITCH(0U, 5U);
+  }
+
+  _SFD_EML_CALL(0U, chartInstance->c2_sfEvent, 8);
+  for (c2_i3 = 0; c2_i3 < 2; c2_i3++) {
+    c2_m[c2_i3] = 4.0 + -3.0 * (real_T)c2_i3;
   }
 
   _SFD_EML_CALL(0U, chartInstance->c2_sfEvent, 9);
-  c2_c_n = (int32_T)c2_n - 1;
-  for (c2_i11 = 0; c2_i11 < 4; c2_i11++) {
-    c2_a2[c2_i11] = c2_array[c2_c_n + (c2_i11 << 1)];
-  }
-
-  _SFD_EML_CALL(0U, chartInstance->c2_sfEvent, 11);
-  for (c2_i12 = 0; c2_i12 < 4; c2_i12++) {
-    c2_p[c2_i12] = c2_a2[c2_i12];
-  }
-
-  c2_b_x = c2_t;
-  c2_td = c2_p[0];
-  for (c2_k = 0; c2_k < 3; c2_k++) {
-    c2_b_k = 2.0 + (real_T)c2_k;
-    c2_td = c2_b_x * c2_td + c2_p[(int32_T)c2_b_k - 1];
-  }
-
-  _SFD_EML_CALL(0U, chartInstance->c2_sfEvent, 13);
-  for (c2_i13 = 0; c2_i13 < 4; c2_i13++) {
-    c2_b_a2[c2_i13] = c2_a2[c2_i13];
-  }
-
-  c2_polyder(chartInstance, c2_b_a2, c2_b_tmp_data, c2_b_tmp_sizes);
-  c2_ad_sizes[0] = 1;
-  c2_ad_sizes[1] = c2_b_tmp_sizes[1];
-  c2_ad = c2_ad_sizes[0];
-  c2_b_ad = c2_ad_sizes[1];
-  c2_f_loop_ub = c2_b_tmp_sizes[0] * c2_b_tmp_sizes[1] - 1;
-  for (c2_i14 = 0; c2_i14 <= c2_f_loop_ub; c2_i14++) {
-    c2_ad_data[c2_i14] = c2_b_tmp_data[c2_i14];
+  CV_EML_IF(0, 1, 1, false);
+  _SFD_EML_CALL(0U, chartInstance->c2_sfEvent, 12);
+  for (c2_i4 = 0; c2_i4 < 4; c2_i4++) {
+    c2_a2[c2_i4] = c2_array[c2_i4];
   }
 
   _SFD_EML_CALL(0U, chartInstance->c2_sfEvent, 14);
+  for (c2_i5 = 0; c2_i5 < 4; c2_i5++) {
+    c2_p[c2_i5] = c2_a2[c2_i5];
+  }
+
+  c2_c_x = c2_t;
+  c2_td = c2_p[0];
+  for (c2_k = 0; c2_k < 3; c2_k++) {
+    c2_b_k = 2.0 + (real_T)c2_k;
+    c2_td = c2_c_x * c2_td + c2_p[(int32_T)c2_b_k - 1];
+  }
+
+  _SFD_EML_CALL(0U, chartInstance->c2_sfEvent, 16);
+  for (c2_i6 = 0; c2_i6 < 4; c2_i6++) {
+    c2_b_a2[c2_i6] = c2_a2[c2_i6];
+  }
+
+  c2_polyder(chartInstance, c2_b_a2, c2_tmp_data, c2_tmp_sizes);
+  c2_ad_sizes[0] = 1;
+  c2_ad_sizes[1] = c2_tmp_sizes[1];
+  c2_ad = c2_ad_sizes[0];
+  c2_b_ad = c2_ad_sizes[1];
+  c2_b_loop_ub = c2_tmp_sizes[0] * c2_tmp_sizes[1] - 1;
+  for (c2_i7 = 0; c2_i7 <= c2_b_loop_ub; c2_i7++) {
+    c2_ad_data[c2_i7] = c2_tmp_data[c2_i7];
+  }
+
+  _SFD_EML_CALL(0U, chartInstance->c2_sfEvent, 17);
   c2_b_ad_sizes[0] = 1;
   c2_b_ad_sizes[1] = c2_ad_sizes[1];
   c2_c_ad = c2_b_ad_sizes[0];
   c2_d_ad = c2_b_ad_sizes[1];
-  c2_g_loop_ub = c2_ad_sizes[0] * c2_ad_sizes[1] - 1;
-  for (c2_i15 = 0; c2_i15 <= c2_g_loop_ub; c2_i15++) {
-    c2_b_ad_data[c2_i15] = c2_ad_data[c2_i15];
+  c2_c_loop_ub = c2_ad_sizes[0] * c2_ad_sizes[1] - 1;
+  for (c2_i8 = 0; c2_i8 <= c2_c_loop_ub; c2_i8++) {
+    c2_b_ad_data[c2_i8] = c2_ad_data[c2_i8];
   }
 
   c2_dtd = c2_polyval(chartInstance, c2_b_ad_data, c2_b_ad_sizes, c2_t);
-  _SFD_EML_CALL(0U, chartInstance->c2_sfEvent, 16);
+  _SFD_EML_CALL(0U, chartInstance->c2_sfEvent, 19);
   c2_u_sizes[0] = 1;
   c2_u_sizes[1] = c2_ad_sizes[1];
   c2_u = c2_u_sizes[0];
   c2_b_u = c2_u_sizes[1];
-  c2_h_loop_ub = c2_ad_sizes[0] * c2_ad_sizes[1] - 1;
-  for (c2_i16 = 0; c2_i16 <= c2_h_loop_ub; c2_i16++) {
-    c2_u_data[c2_i16] = c2_ad_data[c2_i16];
+  c2_d_loop_ub = c2_ad_sizes[0] * c2_ad_sizes[1] - 1;
+  for (c2_i9 = 0; c2_i9 <= c2_d_loop_ub; c2_i9++) {
+    c2_u_data[c2_i9] = c2_ad_data[c2_i9];
   }
 
   c2_b_u_sizes[0] = 1;
   c2_b_u_sizes[1] = c2_u_sizes[1];
   c2_c_u = c2_b_u_sizes[0];
   c2_d_u = c2_b_u_sizes[1];
-  c2_i_loop_ub = c2_u_sizes[0] * c2_u_sizes[1] - 1;
-  for (c2_i17 = 0; c2_i17 <= c2_i_loop_ub; c2_i17++) {
-    c2_b_u_data[c2_i17] = c2_u_data[c2_i17];
+  c2_e_loop_ub = c2_u_sizes[0] * c2_u_sizes[1] - 1;
+  for (c2_i10 = 0; c2_i10 <= c2_e_loop_ub; c2_i10++) {
+    c2_b_u_data[c2_i10] = c2_u_data[c2_i10];
   }
 
-  c2_trim_leading_zeros(chartInstance, c2_b_u_data, c2_b_u_sizes, c2_c_tmp_data,
-                        c2_c_tmp_sizes);
+  c2_trim_leading_zeros(chartInstance, c2_b_u_data, c2_b_u_sizes, c2_b_tmp_data,
+                        c2_b_tmp_sizes);
   c2_ad2_sizes[0] = 1;
-  c2_ad2_sizes[1] = c2_c_tmp_sizes[1];
+  c2_ad2_sizes[1] = c2_b_tmp_sizes[1];
   c2_ad2 = c2_ad2_sizes[0];
   c2_b_ad2 = c2_ad2_sizes[1];
-  c2_j_loop_ub = c2_c_tmp_sizes[0] * c2_c_tmp_sizes[1] - 1;
-  for (c2_i18 = 0; c2_i18 <= c2_j_loop_ub; c2_i18++) {
-    c2_ad2_data[c2_i18] = c2_c_tmp_data[c2_i18];
+  c2_f_loop_ub = c2_b_tmp_sizes[0] * c2_b_tmp_sizes[1] - 1;
+  for (c2_i11 = 0; c2_i11 <= c2_f_loop_ub; c2_i11++) {
+    c2_ad2_data[c2_i11] = c2_b_tmp_data[c2_i11];
   }
 
   c2_d_n = c2_ad2_sizes[1];
-  c2_i19 = c2_d_n;
+  c2_i12 = c2_d_n;
   c2_c_k = 1;
-  while (c2_c_k <= c2_i19 - 1) {
+  while (c2_c_k <= c2_i12 - 1) {
     _SFD_EML_ARRAY_BOUNDS_CHECK("", 1, 1, c2_ad2_sizes[1], 1, 0);
     _SFD_EML_ARRAY_BOUNDS_CHECK("", 1, 1, c2_ad2_sizes[1], 1, 0);
     c2_ad2_data[0] *= (real_T)c2_d_n;
     c2_c_k = 2;
   }
 
-  c2_b3 = (c2_u_sizes[1] == 0);
-  if (!c2_b3) {
+  c2_b2 = (c2_u_sizes[1] == 0);
+  if (!c2_b2) {
     if (!c2_isfinite(chartInstance, c2_u_data[_SFD_EML_ARRAY_BOUNDS_CHECK("",
           c2_u_sizes[1], 1, c2_u_sizes[1], 1, 0) - 1])) {
       c2_ad2_data[_SFD_EML_ARRAY_BOUNDS_CHECK("", c2_ad2_sizes[1], 1,
@@ -587,18 +523,18 @@ static void c2_chartstep_c2_wheel1(SFc2_wheel1InstanceStruct *chartInstance)
     }
   }
 
-  _SFD_EML_CALL(0U, chartInstance->c2_sfEvent, 17);
+  _SFD_EML_CALL(0U, chartInstance->c2_sfEvent, 20);
   c2_b_ad2_sizes[0] = 1;
   c2_b_ad2_sizes[1] = c2_ad2_sizes[1];
   c2_c_ad2 = c2_b_ad2_sizes[0];
   c2_d_ad2 = c2_b_ad2_sizes[1];
-  c2_k_loop_ub = c2_ad2_sizes[0] * c2_ad2_sizes[1] - 1;
-  for (c2_i20 = 0; c2_i20 <= c2_k_loop_ub; c2_i20++) {
-    c2_b_ad2_data[c2_i20] = c2_ad2_data[c2_i20];
+  c2_g_loop_ub = c2_ad2_sizes[0] * c2_ad2_sizes[1] - 1;
+  for (c2_i13 = 0; c2_i13 <= c2_g_loop_ub; c2_i13++) {
+    c2_b_ad2_data[c2_i13] = c2_ad2_data[c2_i13];
   }
 
   c2_d2td = c2_polyval(chartInstance, c2_b_ad2_data, c2_b_ad2_sizes, c2_t);
-  _SFD_EML_CALL(0U, chartInstance->c2_sfEvent, -17);
+  _SFD_EML_CALL(0U, chartInstance->c2_sfEvent, -20);
   _SFD_SYMBOL_SCOPE_POP();
   *c2_b_td = c2_td;
   *c2_b_dtd = c2_dtd;
@@ -681,79 +617,39 @@ static const mxArray *c2_b_sf_marshallOut(void *chartInstanceVoid, void
   *c2_inData)
 {
   const mxArray *c2_mxArrayOutData = NULL;
-  int32_T c2_i21;
-  real_T c2_b_inData[2];
-  int32_T c2_i22;
-  real_T c2_u[2];
+  int32_T c2_i14;
+  real_T c2_b_inData[4];
+  int32_T c2_i15;
+  real_T c2_u[4];
   const mxArray *c2_y = NULL;
   SFc2_wheel1InstanceStruct *chartInstance;
   chartInstance = (SFc2_wheel1InstanceStruct *)chartInstanceVoid;
   c2_mxArrayOutData = NULL;
-  for (c2_i21 = 0; c2_i21 < 2; c2_i21++) {
-    c2_b_inData[c2_i21] = (*(real_T (*)[2])c2_inData)[c2_i21];
+  for (c2_i14 = 0; c2_i14 < 4; c2_i14++) {
+    c2_b_inData[c2_i14] = (*(real_T (*)[4])c2_inData)[c2_i14];
   }
 
-  for (c2_i22 = 0; c2_i22 < 2; c2_i22++) {
-    c2_u[c2_i22] = c2_b_inData[c2_i22];
+  for (c2_i15 = 0; c2_i15 < 4; c2_i15++) {
+    c2_u[c2_i15] = c2_b_inData[c2_i15];
   }
 
   c2_y = NULL;
-  sf_mex_assign(&c2_y, sf_mex_create("y", c2_u, 0, 0U, 1U, 0U, 1, 2), false);
+  sf_mex_assign(&c2_y, sf_mex_create("y", c2_u, 0, 0U, 1U, 0U, 1, 4), false);
   sf_mex_assign(&c2_mxArrayOutData, c2_y, false);
   return c2_mxArrayOutData;
 }
 
-static const mxArray *c2_c_sf_marshallOut(void *chartInstanceVoid, void
-  *c2_inData)
-{
-  const mxArray *c2_mxArrayOutData = NULL;
-  int32_T c2_i23;
-  int32_T c2_i24;
-  int32_T c2_i25;
-  real_T c2_b_inData[8];
-  int32_T c2_i26;
-  int32_T c2_i27;
-  int32_T c2_i28;
-  real_T c2_u[8];
-  const mxArray *c2_y = NULL;
-  SFc2_wheel1InstanceStruct *chartInstance;
-  chartInstance = (SFc2_wheel1InstanceStruct *)chartInstanceVoid;
-  c2_mxArrayOutData = NULL;
-  c2_i23 = 0;
-  for (c2_i24 = 0; c2_i24 < 4; c2_i24++) {
-    for (c2_i25 = 0; c2_i25 < 2; c2_i25++) {
-      c2_b_inData[c2_i25 + c2_i23] = (*(real_T (*)[8])c2_inData)[c2_i25 + c2_i23];
-    }
-
-    c2_i23 += 2;
-  }
-
-  c2_i26 = 0;
-  for (c2_i27 = 0; c2_i27 < 4; c2_i27++) {
-    for (c2_i28 = 0; c2_i28 < 2; c2_i28++) {
-      c2_u[c2_i28 + c2_i26] = c2_b_inData[c2_i28 + c2_i26];
-    }
-
-    c2_i26 += 2;
-  }
-
-  c2_y = NULL;
-  sf_mex_assign(&c2_y, sf_mex_create("y", c2_u, 0, 0U, 1U, 0U, 2, 2, 4), false);
-  sf_mex_assign(&c2_mxArrayOutData, c2_y, false);
-  return c2_mxArrayOutData;
-}
-
-static const mxArray *c2_d_sf_marshallOut(void *chartInstanceVoid, real_T
+static const mxArray *c2_c_sf_marshallOut(void *chartInstanceVoid, real_T
   c2_inData_data[], int32_T c2_inData_sizes[2])
 {
   const mxArray *c2_mxArrayOutData = NULL;
   int32_T c2_b_inData_sizes[2];
   int32_T c2_loop_ub;
-  int32_T c2_i29;
+  int32_T c2_i16;
   real_T c2_b_inData_data[2];
   int32_T c2_u_sizes[2];
   int32_T c2_b_loop_ub;
-  int32_T c2_i30;
+  int32_T c2_i17;
   real_T c2_u_data[2];
   const mxArray *c2_y = NULL;
   SFc2_wheel1InstanceStruct *chartInstance;
@@ -762,17 +658,17 @@ static const mxArray *c2_d_sf_marshallOut(void *chartInstanceVoid, real_T
   c2_b_inData_sizes[0] = 1;
   c2_b_inData_sizes[1] = c2_inData_sizes[1];
   c2_loop_ub = c2_inData_sizes[1] - 1;
-  for (c2_i29 = 0; c2_i29 <= c2_loop_ub; c2_i29++) {
-    c2_b_inData_data[c2_b_inData_sizes[0] * c2_i29] =
-      c2_inData_data[c2_inData_sizes[0] * c2_i29];
+  for (c2_i16 = 0; c2_i16 <= c2_loop_ub; c2_i16++) {
+    c2_b_inData_data[c2_b_inData_sizes[0] * c2_i16] =
+      c2_inData_data[c2_inData_sizes[0] * c2_i16];
   }
 
   c2_u_sizes[0] = 1;
   c2_u_sizes[1] = c2_b_inData_sizes[1];
   c2_b_loop_ub = c2_b_inData_sizes[1] - 1;
-  for (c2_i30 = 0; c2_i30 <= c2_b_loop_ub; c2_i30++) {
-    c2_u_data[c2_u_sizes[0] * c2_i30] = c2_b_inData_data[c2_b_inData_sizes[0] *
-      c2_i30];
+  for (c2_i17 = 0; c2_i17 <= c2_b_loop_ub; c2_i17++) {
+    c2_u_data[c2_u_sizes[0] * c2_i17] = c2_b_inData_data[c2_b_inData_sizes[0] *
+      c2_i17];
   }
 
   c2_y = NULL;
@@ -786,9 +682,9 @@ static void c2_c_emlrt_marshallIn(SFc2_wheel1InstanceStruct *chartInstance,
   const mxArray *c2_u, const emlrtMsgIdentifier *c2_parentId, real_T c2_y_data[],
   int32_T c2_y_sizes[2])
 {
-  int32_T c2_i31;
+  int32_T c2_i18;
   uint32_T c2_uv0[2];
-  int32_T c2_i32;
+  int32_T c2_i19;
   static boolean_T c2_bv0[2] = { false, true };
 
   boolean_T c2_bv1[2];
@@ -797,14 +693,14 @@ static void c2_c_emlrt_marshallIn(SFc2_wheel1InstanceStruct *chartInstance,
   int32_T c2_y;
   int32_T c2_b_y;
   int32_T c2_loop_ub;
-  int32_T c2_i33;
+  int32_T c2_i20;
   (void)chartInstance;
-  for (c2_i31 = 0; c2_i31 < 2; c2_i31++) {
-    c2_uv0[c2_i31] = 1U + (uint32_T)c2_i31;
+  for (c2_i18 = 0; c2_i18 < 2; c2_i18++) {
+    c2_uv0[c2_i18] = 1U + (uint32_T)c2_i18;
   }
 
-  for (c2_i32 = 0; c2_i32 < 2; c2_i32++) {
-    c2_bv1[c2_i32] = c2_bv0[c2_i32];
+  for (c2_i19 = 0; c2_i19 < 2; c2_i19++) {
+    c2_bv1[c2_i19] = c2_bv0[c2_i19];
   }
 
   sf_mex_import_vs(c2_parentId, sf_mex_dup(c2_u), c2_tmp_data, 1, 0, 0U, 1, 0U,
@@ -814,8 +710,8 @@ static void c2_c_emlrt_marshallIn(SFc2_wheel1InstanceStruct *chartInstance,
   c2_y = c2_y_sizes[0];
   c2_b_y = c2_y_sizes[1];
   c2_loop_ub = c2_tmp_sizes[0] * c2_tmp_sizes[1] - 1;
-  for (c2_i33 = 0; c2_i33 <= c2_loop_ub; c2_i33++) {
-    c2_y_data[c2_i33] = c2_tmp_data[c2_i33];
+  for (c2_i20 = 0; c2_i20 <= c2_loop_ub; c2_i20++) {
+    c2_y_data[c2_i20] = c2_tmp_data[c2_i20];
   }
 
   sf_mex_destroy(&c2_u);
@@ -831,7 +727,7 @@ static void c2_b_sf_marshallIn(void *chartInstanceVoid, const mxArray
   int32_T c2_y_sizes[2];
   real_T c2_y_data[2];
   int32_T c2_loop_ub;
-  int32_T c2_i34;
+  int32_T c2_i21;
   SFc2_wheel1InstanceStruct *chartInstance;
   chartInstance = (SFc2_wheel1InstanceStruct *)chartInstanceVoid;
   c2_ad2 = sf_mex_dup(c2_mxArrayInData);
@@ -844,25 +740,25 @@ static void c2_b_sf_marshallIn(void *chartInstanceVoid, const mxArray
   c2_outData_sizes[0] = 1;
   c2_outData_sizes[1] = c2_y_sizes[1];
   c2_loop_ub = c2_y_sizes[1] - 1;
-  for (c2_i34 = 0; c2_i34 <= c2_loop_ub; c2_i34++) {
-    c2_outData_data[c2_outData_sizes[0] * c2_i34] = c2_y_data[c2_y_sizes[0] *
-      c2_i34];
+  for (c2_i21 = 0; c2_i21 <= c2_loop_ub; c2_i21++) {
+    c2_outData_data[c2_outData_sizes[0] * c2_i21] = c2_y_data[c2_y_sizes[0] *
+      c2_i21];
   }
 
   sf_mex_destroy(&c2_mxArrayInData);
 }
 
-static const mxArray *c2_e_sf_marshallOut(void *chartInstanceVoid, real_T
+static const mxArray *c2_d_sf_marshallOut(void *chartInstanceVoid, real_T
   c2_inData_data[], int32_T c2_inData_sizes[2])
 {
   const mxArray *c2_mxArrayOutData = NULL;
   int32_T c2_b_inData_sizes[2];
   int32_T c2_loop_ub;
-  int32_T c2_i35;
+  int32_T c2_i22;
   real_T c2_b_inData_data[3];
   int32_T c2_u_sizes[2];
   int32_T c2_b_loop_ub;
-  int32_T c2_i36;
+  int32_T c2_i23;
   real_T c2_u_data[3];
   const mxArray *c2_y = NULL;
   SFc2_wheel1InstanceStruct *chartInstance;
@@ -871,17 +767,17 @@ static const mxArray *c2_e_sf_marshallOut(void *chartInstanceVoid, real_T
   c2_b_inData_sizes[0] = 1;
   c2_b_inData_sizes[1] = c2_inData_sizes[1];
   c2_loop_ub = c2_inData_sizes[1] - 1;
-  for (c2_i35 = 0; c2_i35 <= c2_loop_ub; c2_i35++) {
-    c2_b_inData_data[c2_b_inData_sizes[0] * c2_i35] =
-      c2_inData_data[c2_inData_sizes[0] * c2_i35];
+  for (c2_i22 = 0; c2_i22 <= c2_loop_ub; c2_i22++) {
+    c2_b_inData_data[c2_b_inData_sizes[0] * c2_i22] =
+      c2_inData_data[c2_inData_sizes[0] * c2_i22];
   }
 
   c2_u_sizes[0] = 1;
   c2_u_sizes[1] = c2_b_inData_sizes[1];
   c2_b_loop_ub = c2_b_inData_sizes[1] - 1;
-  for (c2_i36 = 0; c2_i36 <= c2_b_loop_ub; c2_i36++) {
-    c2_u_data[c2_u_sizes[0] * c2_i36] = c2_b_inData_data[c2_b_inData_sizes[0] *
-      c2_i36];
+  for (c2_i23 = 0; c2_i23 <= c2_b_loop_ub; c2_i23++) {
+    c2_u_data[c2_u_sizes[0] * c2_i23] = c2_b_inData_data[c2_b_inData_sizes[0] *
+      c2_i23];
   }
 
   c2_y = NULL;
@@ -895,9 +791,9 @@ static void c2_d_emlrt_marshallIn(SFc2_wheel1InstanceStruct *chartInstance,
   const mxArray *c2_u, const emlrtMsgIdentifier *c2_parentId, real_T c2_y_data[],
   int32_T c2_y_sizes[2])
 {
-  int32_T c2_i37;
+  int32_T c2_i24;
   uint32_T c2_uv1[2];
-  int32_T c2_i38;
+  int32_T c2_i25;
   static boolean_T c2_bv2[2] = { false, true };
 
   boolean_T c2_bv3[2];
@@ -906,14 +802,14 @@ static void c2_d_emlrt_marshallIn(SFc2_wheel1InstanceStruct *chartInstance,
   int32_T c2_y;
   int32_T c2_b_y;
   int32_T c2_loop_ub;
-  int32_T c2_i39;
+  int32_T c2_i26;
   (void)chartInstance;
-  for (c2_i37 = 0; c2_i37 < 2; c2_i37++) {
-    c2_uv1[c2_i37] = 1U + ((uint32_T)c2_i37 << 1);
+  for (c2_i24 = 0; c2_i24 < 2; c2_i24++) {
+    c2_uv1[c2_i24] = 1U + ((uint32_T)c2_i24 << 1);
   }
 
-  for (c2_i38 = 0; c2_i38 < 2; c2_i38++) {
-    c2_bv3[c2_i38] = c2_bv2[c2_i38];
+  for (c2_i25 = 0; c2_i25 < 2; c2_i25++) {
+    c2_bv3[c2_i25] = c2_bv2[c2_i25];
   }
 
   sf_mex_import_vs(c2_parentId, sf_mex_dup(c2_u), c2_tmp_data, 1, 0, 0U, 1, 0U,
@@ -923,8 +819,8 @@ static void c2_d_emlrt_marshallIn(SFc2_wheel1InstanceStruct *chartInstance,
   c2_y = c2_y_sizes[0];
   c2_b_y = c2_y_sizes[1];
   c2_loop_ub = c2_tmp_sizes[0] * c2_tmp_sizes[1] - 1;
-  for (c2_i39 = 0; c2_i39 <= c2_loop_ub; c2_i39++) {
-    c2_y_data[c2_i39] = c2_tmp_data[c2_i39];
+  for (c2_i26 = 0; c2_i26 <= c2_loop_ub; c2_i26++) {
+    c2_y_data[c2_i26] = c2_tmp_data[c2_i26];
   }
 
   sf_mex_destroy(&c2_u);
@@ -940,7 +836,7 @@ static void c2_c_sf_marshallIn(void *chartInstanceVoid, const mxArray
   int32_T c2_y_sizes[2];
   real_T c2_y_data[3];
   int32_T c2_loop_ub;
-  int32_T c2_i40;
+  int32_T c2_i27;
   SFc2_wheel1InstanceStruct *chartInstance;
   chartInstance = (SFc2_wheel1InstanceStruct *)chartInstanceVoid;
   c2_ad = sf_mex_dup(c2_mxArrayInData);
@@ -953,49 +849,23 @@ static void c2_c_sf_marshallIn(void *chartInstanceVoid, const mxArray
   c2_outData_sizes[0] = 1;
   c2_outData_sizes[1] = c2_y_sizes[1];
   c2_loop_ub = c2_y_sizes[1] - 1;
-  for (c2_i40 = 0; c2_i40 <= c2_loop_ub; c2_i40++) {
-    c2_outData_data[c2_outData_sizes[0] * c2_i40] = c2_y_data[c2_y_sizes[0] *
-      c2_i40];
+  for (c2_i27 = 0; c2_i27 <= c2_loop_ub; c2_i27++) {
+    c2_outData_data[c2_outData_sizes[0] * c2_i27] = c2_y_data[c2_y_sizes[0] *
+      c2_i27];
   }
 
   sf_mex_destroy(&c2_mxArrayInData);
-}
-
-static const mxArray *c2_f_sf_marshallOut(void *chartInstanceVoid, void
-  *c2_inData)
-{
-  const mxArray *c2_mxArrayOutData = NULL;
-  int32_T c2_i41;
-  real_T c2_b_inData[4];
-  int32_T c2_i42;
-  real_T c2_u[4];
-  const mxArray *c2_y = NULL;
-  SFc2_wheel1InstanceStruct *chartInstance;
-  chartInstance = (SFc2_wheel1InstanceStruct *)chartInstanceVoid;
-  c2_mxArrayOutData = NULL;
-  for (c2_i41 = 0; c2_i41 < 4; c2_i41++) {
-    c2_b_inData[c2_i41] = (*(real_T (*)[4])c2_inData)[c2_i41];
-  }
-
-  for (c2_i42 = 0; c2_i42 < 4; c2_i42++) {
-    c2_u[c2_i42] = c2_b_inData[c2_i42];
-  }
-
-  c2_y = NULL;
-  sf_mex_assign(&c2_y, sf_mex_create("y", c2_u, 0, 0U, 1U, 0U, 2, 1, 4), false);
-  sf_mex_assign(&c2_mxArrayOutData, c2_y, false);
-  return c2_mxArrayOutData;
 }
 
 static void c2_e_emlrt_marshallIn(SFc2_wheel1InstanceStruct *chartInstance,
   const mxArray *c2_u, const emlrtMsgIdentifier *c2_parentId, real_T c2_y[4])
 {
   real_T c2_dv0[4];
-  int32_T c2_i43;
+  int32_T c2_i28;
   (void)chartInstance;
-  sf_mex_import(c2_parentId, sf_mex_dup(c2_u), c2_dv0, 1, 0, 0U, 1, 0U, 2, 1, 4);
-  for (c2_i43 = 0; c2_i43 < 4; c2_i43++) {
-    c2_y[c2_i43] = c2_dv0[c2_i43];
+  sf_mex_import(c2_parentId, sf_mex_dup(c2_u), c2_dv0, 1, 0, 0U, 1, 0U, 1, 4);
+  for (c2_i28 = 0; c2_i28 < 4; c2_i28++) {
+    c2_y[c2_i28] = c2_dv0[c2_i28];
   }
 
   sf_mex_destroy(&c2_u);
@@ -1008,7 +878,7 @@ static void c2_d_sf_marshallIn(void *chartInstanceVoid, const mxArray
   const char_T *c2_identifier;
   emlrtMsgIdentifier c2_thisId;
   real_T c2_y[4];
-  int32_T c2_i44;
+  int32_T c2_i29;
   SFc2_wheel1InstanceStruct *chartInstance;
   chartInstance = (SFc2_wheel1InstanceStruct *)chartInstanceVoid;
   c2_a2 = sf_mex_dup(c2_mxArrayInData);
@@ -1017,71 +887,120 @@ static void c2_d_sf_marshallIn(void *chartInstanceVoid, const mxArray
   c2_thisId.fParent = NULL;
   c2_e_emlrt_marshallIn(chartInstance, sf_mex_dup(c2_a2), &c2_thisId, c2_y);
   sf_mex_destroy(&c2_a2);
-  for (c2_i44 = 0; c2_i44 < 4; c2_i44++) {
-    (*(real_T (*)[4])c2_outData)[c2_i44] = c2_y[c2_i44];
+  for (c2_i29 = 0; c2_i29 < 4; c2_i29++) {
+    (*(real_T (*)[4])c2_outData)[c2_i29] = c2_y[c2_i29];
   }
 
   sf_mex_destroy(&c2_mxArrayInData);
 }
 
-static const mxArray *c2_g_sf_marshallOut(void *chartInstanceVoid, real_T
-  c2_inData_data[], int32_T *c2_inData_sizes)
+static const mxArray *c2_e_sf_marshallOut(void *chartInstanceVoid, void
+  *c2_inData)
 {
   const mxArray *c2_mxArrayOutData = NULL;
-  int32_T c2_b_inData_sizes;
-  int32_T c2_loop_ub;
-  int32_T c2_i45;
-  real_T c2_b_inData_data[2];
-  int32_T c2_u_sizes;
-  int32_T c2_b_loop_ub;
-  int32_T c2_i46;
-  real_T c2_u_data[2];
+  int32_T c2_i30;
+  real_T c2_b_inData[2];
+  int32_T c2_i31;
+  real_T c2_u[2];
   const mxArray *c2_y = NULL;
   SFc2_wheel1InstanceStruct *chartInstance;
   chartInstance = (SFc2_wheel1InstanceStruct *)chartInstanceVoid;
   c2_mxArrayOutData = NULL;
-  c2_b_inData_sizes = *c2_inData_sizes;
-  c2_loop_ub = *c2_inData_sizes - 1;
-  for (c2_i45 = 0; c2_i45 <= c2_loop_ub; c2_i45++) {
-    c2_b_inData_data[c2_i45] = c2_inData_data[c2_i45];
+  for (c2_i30 = 0; c2_i30 < 2; c2_i30++) {
+    c2_b_inData[c2_i30] = (*(real_T (*)[2])c2_inData)[c2_i30];
   }
 
-  c2_u_sizes = c2_b_inData_sizes;
-  c2_b_loop_ub = c2_b_inData_sizes - 1;
-  for (c2_i46 = 0; c2_i46 <= c2_b_loop_ub; c2_i46++) {
-    c2_u_data[c2_i46] = c2_b_inData_data[c2_i46];
+  for (c2_i31 = 0; c2_i31 < 2; c2_i31++) {
+    c2_u[c2_i31] = c2_b_inData[c2_i31];
   }
 
   c2_y = NULL;
-  sf_mex_assign(&c2_y, sf_mex_create("y", c2_u_data, 0, 0U, 1U, 0U, 1,
-    c2_u_sizes), false);
+  sf_mex_assign(&c2_y, sf_mex_create("y", c2_u, 0, 0U, 1U, 0U, 2, 1, 2), false);
+  sf_mex_assign(&c2_mxArrayOutData, c2_y, false);
+  return c2_mxArrayOutData;
+}
+
+static const mxArray *c2_f_sf_marshallOut(void *chartInstanceVoid, real_T
+  c2_inData_data[], int32_T c2_inData_sizes[2])
+{
+  const mxArray *c2_mxArrayOutData = NULL;
+  int32_T c2_b_inData_sizes[2];
+  int32_T c2_loop_ub;
+  int32_T c2_i32;
+  int32_T c2_b_loop_ub;
+  int32_T c2_i33;
+  real_T c2_b_inData_data[1];
+  int32_T c2_u_sizes[2];
+  int32_T c2_c_loop_ub;
+  int32_T c2_i34;
+  int32_T c2_d_loop_ub;
+  int32_T c2_i35;
+  real_T c2_u_data[1];
+  const mxArray *c2_y = NULL;
+  SFc2_wheel1InstanceStruct *chartInstance;
+  chartInstance = (SFc2_wheel1InstanceStruct *)chartInstanceVoid;
+  c2_mxArrayOutData = NULL;
+  c2_b_inData_sizes[0] = c2_inData_sizes[0];
+  c2_b_inData_sizes[1] = c2_inData_sizes[1];
+  c2_loop_ub = c2_inData_sizes[1] - 1;
+  for (c2_i32 = 0; c2_i32 <= c2_loop_ub; c2_i32++) {
+    c2_b_loop_ub = c2_inData_sizes[0] - 1;
+    for (c2_i33 = 0; c2_i33 <= c2_b_loop_ub; c2_i33++) {
+      c2_b_inData_data[c2_i33 + c2_b_inData_sizes[0] * c2_i32] =
+        c2_inData_data[c2_i33 + c2_inData_sizes[0] * c2_i32];
+    }
+  }
+
+  c2_u_sizes[0] = c2_b_inData_sizes[0];
+  c2_u_sizes[1] = c2_b_inData_sizes[1];
+  c2_c_loop_ub = c2_b_inData_sizes[1] - 1;
+  for (c2_i34 = 0; c2_i34 <= c2_c_loop_ub; c2_i34++) {
+    c2_d_loop_ub = c2_b_inData_sizes[0] - 1;
+    for (c2_i35 = 0; c2_i35 <= c2_d_loop_ub; c2_i35++) {
+      c2_u_data[c2_i35 + c2_u_sizes[0] * c2_i34] = c2_b_inData_data[c2_i35 +
+        c2_b_inData_sizes[0] * c2_i34];
+    }
+  }
+
+  c2_y = NULL;
+  sf_mex_assign(&c2_y, sf_mex_create("y", c2_u_data, 0, 0U, 1U, 0U, 2,
+    c2_u_sizes[0], c2_u_sizes[1]), false);
   sf_mex_assign(&c2_mxArrayOutData, c2_y, false);
   return c2_mxArrayOutData;
 }
 
 static void c2_f_emlrt_marshallIn(SFc2_wheel1InstanceStruct *chartInstance,
   const mxArray *c2_u, const emlrtMsgIdentifier *c2_parentId, real_T c2_y_data[],
-  int32_T *c2_y_sizes)
+  int32_T c2_y_sizes[2])
 {
-  static uint32_T c2_uv2[1] = { 2U };
-
-  uint32_T c2_uv3[1];
-  static boolean_T c2_bv4[1] = { true };
-
-  boolean_T c2_bv5[1];
-  int32_T c2_tmp_sizes;
-  real_T c2_tmp_data[2];
+  int32_T c2_i36;
+  uint32_T c2_uv2[2];
+  int32_T c2_i37;
+  boolean_T c2_bv4[2];
+  int32_T c2_tmp_sizes[2];
+  real_T c2_tmp_data[1];
+  int32_T c2_y;
+  int32_T c2_b_y;
   int32_T c2_loop_ub;
-  int32_T c2_i47;
+  int32_T c2_i38;
   (void)chartInstance;
-  c2_uv3[0] = c2_uv2[0];
-  c2_bv5[0] = c2_bv4[0];
+  for (c2_i36 = 0; c2_i36 < 2; c2_i36++) {
+    c2_uv2[c2_i36] = 1U;
+  }
+
+  for (c2_i37 = 0; c2_i37 < 2; c2_i37++) {
+    c2_bv4[c2_i37] = true;
+  }
+
   sf_mex_import_vs(c2_parentId, sf_mex_dup(c2_u), c2_tmp_data, 1, 0, 0U, 1, 0U,
-                   1, c2_bv5, c2_uv3, &c2_tmp_sizes);
-  *c2_y_sizes = c2_tmp_sizes;
-  c2_loop_ub = c2_tmp_sizes - 1;
-  for (c2_i47 = 0; c2_i47 <= c2_loop_ub; c2_i47++) {
-    c2_y_data[c2_i47] = c2_tmp_data[c2_i47];
+                   2, c2_bv4, c2_uv2, c2_tmp_sizes);
+  c2_y_sizes[0] = c2_tmp_sizes[0];
+  c2_y_sizes[1] = c2_tmp_sizes[1];
+  c2_y = c2_y_sizes[0];
+  c2_b_y = c2_y_sizes[1];
+  c2_loop_ub = c2_tmp_sizes[0] * c2_tmp_sizes[1] - 1;
+  for (c2_i38 = 0; c2_i38 <= c2_loop_ub; c2_i38++) {
+    c2_y_data[c2_i38] = c2_tmp_data[c2_i38];
   }
 
   sf_mex_destroy(&c2_u);
@@ -1089,15 +1008,17 @@ static void c2_f_emlrt_marshallIn(SFc2_wheel1InstanceStruct *chartInstance,
 
 static void c2_e_sf_marshallIn(void *chartInstanceVoid, const mxArray
   *c2_mxArrayInData, const char_T *c2_varName, real_T c2_outData_data[], int32_T
-  *c2_outData_sizes)
+  c2_outData_sizes[2])
 {
   const mxArray *c2_n;
   const char_T *c2_identifier;
   emlrtMsgIdentifier c2_thisId;
-  int32_T c2_y_sizes;
-  real_T c2_y_data[2];
+  int32_T c2_y_sizes[2];
+  real_T c2_y_data[1];
   int32_T c2_loop_ub;
-  int32_T c2_i48;
+  int32_T c2_i39;
+  int32_T c2_b_loop_ub;
+  int32_T c2_i40;
   SFc2_wheel1InstanceStruct *chartInstance;
   chartInstance = (SFc2_wheel1InstanceStruct *)chartInstanceVoid;
   c2_n = sf_mex_dup(c2_mxArrayInData);
@@ -1105,12 +1026,17 @@ static void c2_e_sf_marshallIn(void *chartInstanceVoid, const mxArray
   c2_thisId.fIdentifier = c2_identifier;
   c2_thisId.fParent = NULL;
   c2_f_emlrt_marshallIn(chartInstance, sf_mex_dup(c2_n), &c2_thisId, c2_y_data,
-                        &c2_y_sizes);
+                        c2_y_sizes);
   sf_mex_destroy(&c2_n);
-  *c2_outData_sizes = c2_y_sizes;
-  c2_loop_ub = c2_y_sizes - 1;
-  for (c2_i48 = 0; c2_i48 <= c2_loop_ub; c2_i48++) {
-    c2_outData_data[c2_i48] = c2_y_data[c2_i48];
+  c2_outData_sizes[0] = c2_y_sizes[0];
+  c2_outData_sizes[1] = c2_y_sizes[1];
+  c2_loop_ub = c2_y_sizes[1] - 1;
+  for (c2_i39 = 0; c2_i39 <= c2_loop_ub; c2_i39++) {
+    c2_b_loop_ub = c2_y_sizes[0] - 1;
+    for (c2_i40 = 0; c2_i40 <= c2_b_loop_ub; c2_i40++) {
+      c2_outData_data[c2_i40 + c2_outData_sizes[0] * c2_i39] = c2_y_data[c2_i40
+        + c2_y_sizes[0] * c2_i39];
+    }
   }
 
   sf_mex_destroy(&c2_mxArrayInData);
@@ -1120,7 +1046,7 @@ const mxArray *sf_c2_wheel1_get_eml_resolved_functions_info(void)
 {
   const mxArray *c2_nameCaptureInfo = NULL;
   c2_nameCaptureInfo = NULL;
-  sf_mex_assign(&c2_nameCaptureInfo, sf_mex_createstruct("structure", 2, 24, 1),
+  sf_mex_assign(&c2_nameCaptureInfo, sf_mex_createstruct("structure", 2, 21, 1),
                 false);
   c2_info_helper(&c2_nameCaptureInfo);
   sf_mex_emlrtNameCapturePostProcessR2012a(&c2_nameCaptureInfo);
@@ -1171,12 +1097,6 @@ static void c2_info_helper(const mxArray **c2_info)
   const mxArray *c2_lhs19 = NULL;
   const mxArray *c2_rhs20 = NULL;
   const mxArray *c2_lhs20 = NULL;
-  const mxArray *c2_rhs21 = NULL;
-  const mxArray *c2_lhs21 = NULL;
-  const mxArray *c2_rhs22 = NULL;
-  const mxArray *c2_lhs22 = NULL;
-  const mxArray *c2_rhs23 = NULL;
-  const mxArray *c2_lhs23 = NULL;
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(""), "context", "context", 0);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("find"), "name", "name", 0);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("logical"), "dominantType",
@@ -1262,17 +1182,14 @@ static void c2_info_helper(const mxArray **c2_info)
   sf_mex_assign(&c2_lhs3, sf_mex_createcellmatrix(0, 1), false);
   sf_mex_addfield(*c2_info, sf_mex_duplicatearraysafe(&c2_rhs3), "rhs", "rhs", 3);
   sf_mex_addfield(*c2_info, sf_mex_duplicatearraysafe(&c2_lhs3), "lhs", "lhs", 3);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/elmat/find.m!eml_find"),
-                  "context", "context", 4);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "eml_int_forloop_overflow_check"), "name", "name", 4);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(""), "dominantType",
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(""), "context", "context", 4);
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("length"), "name", "name", 4);
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("double"), "dominantType",
                   "dominantType", 4);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/eml/eml_int_forloop_overflow_check.m"),
-                  "resolved", "resolved", 4);
-  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1376005888U), "fileTimeLo",
+    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/elmat/length.m"), "resolved",
+                  "resolved", 4);
+  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1303171406U), "fileTimeLo",
                   "fileTimeLo", 4);
   sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(0U), "fileTimeHi",
                   "fileTimeHi", 4);
@@ -1284,16 +1201,14 @@ static void c2_info_helper(const mxArray **c2_info)
   sf_mex_assign(&c2_lhs4, sf_mex_createcellmatrix(0, 1), false);
   sf_mex_addfield(*c2_info, sf_mex_duplicatearraysafe(&c2_rhs4), "rhs", "rhs", 4);
   sf_mex_addfield(*c2_info, sf_mex_duplicatearraysafe(&c2_lhs4), "lhs", "lhs", 4);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/eml/eml_int_forloop_overflow_check.m!eml_int_forloop_overflow_check_helper"),
-                  "context", "context", 5);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("intmax"), "name", "name", 5);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("char"), "dominantType",
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(""), "context", "context", 5);
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("polyval"), "name", "name", 5);
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("double"), "dominantType",
                   "dominantType", 5);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/elmat/intmax.m"), "resolved",
+    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/polyfun/polyval.m"), "resolved",
                   "resolved", 5);
-  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1362287082U), "fileTimeLo",
+  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1305343202U), "fileTimeLo",
                   "fileTimeLo", 5);
   sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(0U), "fileTimeHi",
                   "fileTimeHi", 5);
@@ -1306,16 +1221,16 @@ static void c2_info_helper(const mxArray **c2_info)
   sf_mex_addfield(*c2_info, sf_mex_duplicatearraysafe(&c2_rhs5), "rhs", "rhs", 5);
   sf_mex_addfield(*c2_info, sf_mex_duplicatearraysafe(&c2_lhs5), "lhs", "lhs", 5);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/elmat/intmax.m"), "context",
+    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/polyfun/polyval.m"), "context",
                   "context", 6);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("eml_switch_helper"), "name",
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("eml_scalar_eg"), "name",
                   "name", 6);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(""), "dominantType",
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("double"), "dominantType",
                   "dominantType", 6);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/eml/eml_switch_helper.m"),
-                  "resolved", "resolved", 6);
-  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1381875500U), "fileTimeLo",
+    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/eml/eml_scalar_eg.m"), "resolved",
+                  "resolved", 6);
+  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1376005888U), "fileTimeLo",
                   "fileTimeLo", 6);
   sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(0U), "fileTimeHi",
                   "fileTimeHi", 6);
@@ -1328,16 +1243,16 @@ static void c2_info_helper(const mxArray **c2_info)
   sf_mex_addfield(*c2_info, sf_mex_duplicatearraysafe(&c2_rhs6), "rhs", "rhs", 6);
   sf_mex_addfield(*c2_info, sf_mex_duplicatearraysafe(&c2_lhs6), "lhs", "lhs", 6);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/elmat/find.m!eml_find"),
-                  "context", "context", 7);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("eml_index_plus"), "name",
-                  "name", 7);
+    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/eml/eml_scalar_eg.m"), "context",
+                  "context", 7);
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("coder.internal.scalarEg"),
+                  "name", "name", 7);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("double"), "dominantType",
                   "dominantType", 7);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/eml/eml_index_plus.m"),
+    "[IXE]$matlabroot$/toolbox/coder/coder/+coder/+internal/scalarEg.p"),
                   "resolved", "resolved", 7);
-  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1372607616U), "fileTimeLo",
+  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1389333120U), "fileTimeLo",
                   "fileTimeLo", 7);
   sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(0U), "fileTimeHi",
                   "fileTimeHi", 7);
@@ -1349,17 +1264,14 @@ static void c2_info_helper(const mxArray **c2_info)
   sf_mex_assign(&c2_lhs7, sf_mex_createcellmatrix(0, 1), false);
   sf_mex_addfield(*c2_info, sf_mex_duplicatearraysafe(&c2_rhs7), "rhs", "rhs", 7);
   sf_mex_addfield(*c2_info, sf_mex_duplicatearraysafe(&c2_lhs7), "lhs", "lhs", 7);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/eml/eml_index_plus.m"), "context",
-                  "context", 8);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("coder.internal.indexPlus"),
-                  "name", "name", 8);
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(""), "context", "context", 8);
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("polyder"), "name", "name", 8);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("double"), "dominantType",
                   "dominantType", 8);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[IXE]$matlabroot$/toolbox/shared/coder/coder/+coder/+internal/indexPlus.m"),
-                  "resolved", "resolved", 8);
-  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1372608360U), "fileTimeLo",
+    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/polyfun/polyder.m"), "resolved",
+                  "resolved", 8);
+  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1378321192U), "fileTimeLo",
                   "fileTimeLo", 8);
   sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(0U), "fileTimeHi",
                   "fileTimeHi", 8);
@@ -1371,14 +1283,17 @@ static void c2_info_helper(const mxArray **c2_info)
   sf_mex_assign(&c2_lhs8, sf_mex_createcellmatrix(0, 1), false);
   sf_mex_addfield(*c2_info, sf_mex_duplicatearraysafe(&c2_rhs8), "rhs", "rhs", 8);
   sf_mex_addfield(*c2_info, sf_mex_duplicatearraysafe(&c2_lhs8), "lhs", "lhs", 8);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(""), "context", "context", 9);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("length"), "name", "name", 9);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("double"), "dominantType",
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
+    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/polyfun/polyder.m"), "context",
+                  "context", 9);
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("coder.internal.assert"),
+                  "name", "name", 9);
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("char"), "dominantType",
                   "dominantType", 9);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/elmat/length.m"), "resolved",
-                  "resolved", 9);
-  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1303171406U), "fileTimeLo",
+    "[IXE]$matlabroot$/toolbox/shared/coder/coder/+coder/+internal/assert.m"),
+                  "resolved", "resolved", 9);
+  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1363736156U), "fileTimeLo",
                   "fileTimeLo", 9);
   sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(0U), "fileTimeHi",
                   "fileTimeHi", 9);
@@ -1390,14 +1305,17 @@ static void c2_info_helper(const mxArray **c2_info)
   sf_mex_assign(&c2_lhs9, sf_mex_createcellmatrix(0, 1), false);
   sf_mex_addfield(*c2_info, sf_mex_duplicatearraysafe(&c2_rhs9), "rhs", "rhs", 9);
   sf_mex_addfield(*c2_info, sf_mex_duplicatearraysafe(&c2_lhs9), "lhs", "lhs", 9);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(""), "context", "context", 10);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("polyval"), "name", "name", 10);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("double"), "dominantType",
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
+    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/polyfun/polyder.m!trim_leading_zeros"),
+                  "context", "context", 10);
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
+    "eml_int_forloop_overflow_check"), "name", "name", 10);
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(""), "dominantType",
                   "dominantType", 10);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/polyfun/polyval.m"), "resolved",
-                  "resolved", 10);
-  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1305343202U), "fileTimeLo",
+    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/eml/eml_int_forloop_overflow_check.m"),
+                  "resolved", "resolved", 10);
+  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1376005888U), "fileTimeLo",
                   "fileTimeLo", 10);
   sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(0U), "fileTimeHi",
                   "fileTimeHi", 10);
@@ -1412,16 +1330,15 @@ static void c2_info_helper(const mxArray **c2_info)
   sf_mex_addfield(*c2_info, sf_mex_duplicatearraysafe(&c2_lhs10), "lhs", "lhs",
                   10);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/polyfun/polyval.m"), "context",
-                  "context", 11);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("eml_scalar_eg"), "name",
-                  "name", 11);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("double"), "dominantType",
+    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/eml/eml_int_forloop_overflow_check.m!eml_int_forloop_overflow_check_helper"),
+                  "context", "context", 11);
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("intmax"), "name", "name", 11);
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("char"), "dominantType",
                   "dominantType", 11);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/eml/eml_scalar_eg.m"), "resolved",
+    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/elmat/intmax.m"), "resolved",
                   "resolved", 11);
-  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1376005888U), "fileTimeLo",
+  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1362287082U), "fileTimeLo",
                   "fileTimeLo", 11);
   sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(0U), "fileTimeHi",
                   "fileTimeHi", 11);
@@ -1436,16 +1353,16 @@ static void c2_info_helper(const mxArray **c2_info)
   sf_mex_addfield(*c2_info, sf_mex_duplicatearraysafe(&c2_lhs11), "lhs", "lhs",
                   11);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/eml/eml_scalar_eg.m"), "context",
+    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/elmat/intmax.m"), "context",
                   "context", 12);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("coder.internal.scalarEg"),
-                  "name", "name", 12);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("double"), "dominantType",
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("eml_switch_helper"), "name",
+                  "name", 12);
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(""), "dominantType",
                   "dominantType", 12);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[IXE]$matlabroot$/toolbox/coder/coder/+coder/+internal/scalarEg.p"),
+    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/eml/eml_switch_helper.m"),
                   "resolved", "resolved", 12);
-  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1389333120U), "fileTimeLo",
+  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1381875500U), "fileTimeLo",
                   "fileTimeLo", 12);
   sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(0U), "fileTimeHi",
                   "fileTimeHi", 12);
@@ -1459,14 +1376,17 @@ static void c2_info_helper(const mxArray **c2_info)
                   12);
   sf_mex_addfield(*c2_info, sf_mex_duplicatearraysafe(&c2_lhs12), "lhs", "lhs",
                   12);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(""), "context", "context", 13);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("polyder"), "name", "name", 13);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("double"), "dominantType",
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
+    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/polyfun/polyder.m"), "context",
+                  "context", 13);
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
+    "eml_int_forloop_overflow_check"), "name", "name", 13);
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(""), "dominantType",
                   "dominantType", 13);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/polyfun/polyder.m"), "resolved",
-                  "resolved", 13);
-  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1378321192U), "fileTimeLo",
+    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/eml/eml_int_forloop_overflow_check.m"),
+                  "resolved", "resolved", 13);
+  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1376005888U), "fileTimeLo",
                   "fileTimeLo", 13);
   sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(0U), "fileTimeHi",
                   "fileTimeHi", 13);
@@ -1483,14 +1403,13 @@ static void c2_info_helper(const mxArray **c2_info)
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
     "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/polyfun/polyder.m"), "context",
                   "context", 14);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("coder.internal.assert"),
-                  "name", "name", 14);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("char"), "dominantType",
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("isfinite"), "name", "name", 14);
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("double"), "dominantType",
                   "dominantType", 14);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[IXE]$matlabroot$/toolbox/shared/coder/coder/+coder/+internal/assert.m"),
-                  "resolved", "resolved", 14);
-  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1363736156U), "fileTimeLo",
+    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/elmat/isfinite.m"), "resolved",
+                  "resolved", 14);
+  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1363735456U), "fileTimeLo",
                   "fileTimeLo", 14);
   sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(0U), "fileTimeHi",
                   "fileTimeHi", 14);
@@ -1505,16 +1424,16 @@ static void c2_info_helper(const mxArray **c2_info)
   sf_mex_addfield(*c2_info, sf_mex_duplicatearraysafe(&c2_lhs14), "lhs", "lhs",
                   14);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/polyfun/polyder.m!trim_leading_zeros"),
-                  "context", "context", 15);
+    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/elmat/isfinite.m"), "context",
+                  "context", 15);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "eml_int_forloop_overflow_check"), "name", "name", 15);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(""), "dominantType",
+    "coder.internal.isBuiltInNumeric"), "name", "name", 15);
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("double"), "dominantType",
                   "dominantType", 15);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/eml/eml_int_forloop_overflow_check.m"),
+    "[IXE]$matlabroot$/toolbox/shared/coder/coder/+coder/+internal/isBuiltInNumeric.m"),
                   "resolved", "resolved", 15);
-  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1376005888U), "fileTimeLo",
+  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1363736156U), "fileTimeLo",
                   "fileTimeLo", 15);
   sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(0U), "fileTimeHi",
                   "fileTimeHi", 15);
@@ -1529,16 +1448,15 @@ static void c2_info_helper(const mxArray **c2_info)
   sf_mex_addfield(*c2_info, sf_mex_duplicatearraysafe(&c2_lhs15), "lhs", "lhs",
                   15);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/polyfun/polyder.m"), "context",
+    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/elmat/isfinite.m"), "context",
                   "context", 16);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "eml_int_forloop_overflow_check"), "name", "name", 16);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(""), "dominantType",
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("isinf"), "name", "name", 16);
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("double"), "dominantType",
                   "dominantType", 16);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/eml/eml_int_forloop_overflow_check.m"),
-                  "resolved", "resolved", 16);
-  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1376005888U), "fileTimeLo",
+    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/elmat/isinf.m"), "resolved",
+                  "resolved", 16);
+  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1363735456U), "fileTimeLo",
                   "fileTimeLo", 16);
   sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(0U), "fileTimeHi",
                   "fileTimeHi", 16);
@@ -1553,15 +1471,16 @@ static void c2_info_helper(const mxArray **c2_info)
   sf_mex_addfield(*c2_info, sf_mex_duplicatearraysafe(&c2_lhs16), "lhs", "lhs",
                   16);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/polyfun/polyder.m"), "context",
+    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/elmat/isinf.m"), "context",
                   "context", 17);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("isfinite"), "name", "name", 17);
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
+    "coder.internal.isBuiltInNumeric"), "name", "name", 17);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("double"), "dominantType",
                   "dominantType", 17);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/elmat/isfinite.m"), "resolved",
-                  "resolved", 17);
-  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1363735456U), "fileTimeLo",
+    "[IXE]$matlabroot$/toolbox/shared/coder/coder/+coder/+internal/isBuiltInNumeric.m"),
+                  "resolved", "resolved", 17);
+  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1363736156U), "fileTimeLo",
                   "fileTimeLo", 17);
   sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(0U), "fileTimeHi",
                   "fileTimeHi", 17);
@@ -1578,14 +1497,13 @@ static void c2_info_helper(const mxArray **c2_info)
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
     "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/elmat/isfinite.m"), "context",
                   "context", 18);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "coder.internal.isBuiltInNumeric"), "name", "name", 18);
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("isnan"), "name", "name", 18);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("double"), "dominantType",
                   "dominantType", 18);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[IXE]$matlabroot$/toolbox/shared/coder/coder/+coder/+internal/isBuiltInNumeric.m"),
-                  "resolved", "resolved", 18);
-  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1363736156U), "fileTimeLo",
+    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/elmat/isnan.m"), "resolved",
+                  "resolved", 18);
+  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1363735458U), "fileTimeLo",
                   "fileTimeLo", 18);
   sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(0U), "fileTimeHi",
                   "fileTimeHi", 18);
@@ -1600,15 +1518,16 @@ static void c2_info_helper(const mxArray **c2_info)
   sf_mex_addfield(*c2_info, sf_mex_duplicatearraysafe(&c2_lhs18), "lhs", "lhs",
                   18);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/elmat/isfinite.m"), "context",
+    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/elmat/isnan.m"), "context",
                   "context", 19);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("isinf"), "name", "name", 19);
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
+    "coder.internal.isBuiltInNumeric"), "name", "name", 19);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("double"), "dominantType",
                   "dominantType", 19);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/elmat/isinf.m"), "resolved",
-                  "resolved", 19);
-  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1363735456U), "fileTimeLo",
+    "[IXE]$matlabroot$/toolbox/shared/coder/coder/+coder/+internal/isBuiltInNumeric.m"),
+                  "resolved", "resolved", 19);
+  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1363736156U), "fileTimeLo",
                   "fileTimeLo", 19);
   sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(0U), "fileTimeHi",
                   "fileTimeHi", 19);
@@ -1623,16 +1542,16 @@ static void c2_info_helper(const mxArray **c2_info)
   sf_mex_addfield(*c2_info, sf_mex_duplicatearraysafe(&c2_lhs19), "lhs", "lhs",
                   19);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/elmat/isinf.m"), "context",
+    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/polyfun/polyder.m"), "context",
                   "context", 20);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "coder.internal.isBuiltInNumeric"), "name", "name", 20);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("double"), "dominantType",
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("coder.internal.nan"), "name",
+                  "name", 20);
+  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("char"), "dominantType",
                   "dominantType", 20);
   sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[IXE]$matlabroot$/toolbox/shared/coder/coder/+coder/+internal/isBuiltInNumeric.m"),
+    "[IXE]$matlabroot$/toolbox/shared/coder/coder/+coder/+internal/nan.m"),
                   "resolved", "resolved", 20);
-  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1363736156U), "fileTimeLo",
+  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1362287232U), "fileTimeLo",
                   "fileTimeLo", 20);
   sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(0U), "fileTimeHi",
                   "fileTimeHi", 20);
@@ -1646,77 +1565,6 @@ static void c2_info_helper(const mxArray **c2_info)
                   20);
   sf_mex_addfield(*c2_info, sf_mex_duplicatearraysafe(&c2_lhs20), "lhs", "lhs",
                   20);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/elmat/isfinite.m"), "context",
-                  "context", 21);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("isnan"), "name", "name", 21);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("double"), "dominantType",
-                  "dominantType", 21);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/elmat/isnan.m"), "resolved",
-                  "resolved", 21);
-  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1363735458U), "fileTimeLo",
-                  "fileTimeLo", 21);
-  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(0U), "fileTimeHi",
-                  "fileTimeHi", 21);
-  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(0U), "mFileTimeLo",
-                  "mFileTimeLo", 21);
-  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(0U), "mFileTimeHi",
-                  "mFileTimeHi", 21);
-  sf_mex_assign(&c2_rhs21, sf_mex_createcellmatrix(0, 1), false);
-  sf_mex_assign(&c2_lhs21, sf_mex_createcellmatrix(0, 1), false);
-  sf_mex_addfield(*c2_info, sf_mex_duplicatearraysafe(&c2_rhs21), "rhs", "rhs",
-                  21);
-  sf_mex_addfield(*c2_info, sf_mex_duplicatearraysafe(&c2_lhs21), "lhs", "lhs",
-                  21);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/elmat/isnan.m"), "context",
-                  "context", 22);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "coder.internal.isBuiltInNumeric"), "name", "name", 22);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("double"), "dominantType",
-                  "dominantType", 22);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[IXE]$matlabroot$/toolbox/shared/coder/coder/+coder/+internal/isBuiltInNumeric.m"),
-                  "resolved", "resolved", 22);
-  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1363736156U), "fileTimeLo",
-                  "fileTimeLo", 22);
-  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(0U), "fileTimeHi",
-                  "fileTimeHi", 22);
-  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(0U), "mFileTimeLo",
-                  "mFileTimeLo", 22);
-  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(0U), "mFileTimeHi",
-                  "mFileTimeHi", 22);
-  sf_mex_assign(&c2_rhs22, sf_mex_createcellmatrix(0, 1), false);
-  sf_mex_assign(&c2_lhs22, sf_mex_createcellmatrix(0, 1), false);
-  sf_mex_addfield(*c2_info, sf_mex_duplicatearraysafe(&c2_rhs22), "rhs", "rhs",
-                  22);
-  sf_mex_addfield(*c2_info, sf_mex_duplicatearraysafe(&c2_lhs22), "lhs", "lhs",
-                  22);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[ILXE]$matlabroot$/toolbox/eml/lib/matlab/polyfun/polyder.m"), "context",
-                  "context", 23);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("coder.internal.nan"), "name",
-                  "name", 23);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut("char"), "dominantType",
-                  "dominantType", 23);
-  sf_mex_addfield(*c2_info, c2_emlrt_marshallOut(
-    "[IXE]$matlabroot$/toolbox/shared/coder/coder/+coder/+internal/nan.m"),
-                  "resolved", "resolved", 23);
-  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(1362287232U), "fileTimeLo",
-                  "fileTimeLo", 23);
-  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(0U), "fileTimeHi",
-                  "fileTimeHi", 23);
-  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(0U), "mFileTimeLo",
-                  "mFileTimeLo", 23);
-  sf_mex_addfield(*c2_info, c2_b_emlrt_marshallOut(0U), "mFileTimeHi",
-                  "mFileTimeHi", 23);
-  sf_mex_assign(&c2_rhs23, sf_mex_createcellmatrix(0, 1), false);
-  sf_mex_assign(&c2_lhs23, sf_mex_createcellmatrix(0, 1), false);
-  sf_mex_addfield(*c2_info, sf_mex_duplicatearraysafe(&c2_rhs23), "rhs", "rhs",
-                  23);
-  sf_mex_addfield(*c2_info, sf_mex_duplicatearraysafe(&c2_lhs23), "lhs", "lhs",
-                  23);
   sf_mex_destroy(&c2_rhs0);
   sf_mex_destroy(&c2_lhs0);
   sf_mex_destroy(&c2_rhs1);
@@ -1759,12 +1607,6 @@ static void c2_info_helper(const mxArray **c2_info)
   sf_mex_destroy(&c2_lhs19);
   sf_mex_destroy(&c2_rhs20);
   sf_mex_destroy(&c2_lhs20);
-  sf_mex_destroy(&c2_rhs21);
-  sf_mex_destroy(&c2_lhs21);
-  sf_mex_destroy(&c2_rhs22);
-  sf_mex_destroy(&c2_lhs22);
-  sf_mex_destroy(&c2_rhs23);
-  sf_mex_destroy(&c2_lhs23);
 }
 
 static const mxArray *c2_emlrt_marshallOut(const char * c2_u)
@@ -1793,17 +1635,17 @@ static void c2_polyder(SFc2_wheel1InstanceStruct *chartInstance, real_T c2_u[4],
   int32_T c2_ny;
   const mxArray *c2_y = NULL;
   int32_T c2_tmp_sizes[2];
-  int32_T c2_iv1[2];
-  int32_T c2_i49;
-  int32_T c2_i50;
+  int32_T c2_iv0[2];
+  int32_T c2_i41;
+  int32_T c2_i42;
   int32_T c2_loop_ub;
-  int32_T c2_i51;
+  int32_T c2_i43;
   real_T c2_tmp_data[3];
-  int32_T c2_i52;
+  int32_T c2_i44;
   int32_T c2_b_ny;
   int32_T c2_c_k;
   int32_T c2_n;
-  int32_T c2_i53;
+  int32_T c2_i45;
   int32_T c2_d_k;
   int32_T c2_e_k;
   boolean_T exitg1;
@@ -1830,18 +1672,18 @@ static void c2_polyder(SFc2_wheel1InstanceStruct *chartInstance, real_T c2_u[4],
   }
 
   c2_tmp_sizes[0] = 1;
-  c2_iv1[0] = 1;
-  c2_iv1[1] = (int32_T)_SFD_NON_NEGATIVE_CHECK("", (real_T)c2_ny);
-  c2_tmp_sizes[1] = c2_iv1[1];
-  c2_i49 = c2_tmp_sizes[0];
-  c2_i50 = c2_tmp_sizes[1];
+  c2_iv0[0] = 1;
+  c2_iv0[1] = (int32_T)_SFD_NON_NEGATIVE_CHECK("", (real_T)c2_ny);
+  c2_tmp_sizes[1] = c2_iv0[1];
+  c2_i41 = c2_tmp_sizes[0];
+  c2_i42 = c2_tmp_sizes[1];
   c2_loop_ub = (int32_T)_SFD_NON_NEGATIVE_CHECK("", (real_T)c2_ny) - 1;
-  for (c2_i51 = 0; c2_i51 <= c2_loop_ub; c2_i51++) {
-    c2_tmp_data[c2_i51] = 0.0;
+  for (c2_i43 = 0; c2_i43 <= c2_loop_ub; c2_i43++) {
+    c2_tmp_data[c2_i43] = 0.0;
   }
 
-  for (c2_i52 = 0; c2_i52 < 2; c2_i52++) {
-    c2_a_sizes[c2_i52] = c2_tmp_sizes[c2_i52];
+  for (c2_i44 = 0; c2_i44 < 2; c2_i44++) {
+    c2_a_sizes[c2_i44] = c2_tmp_sizes[c2_i44];
   }
 
   c2_b_ny = c2_ny;
@@ -1853,8 +1695,8 @@ static void c2_polyder(SFc2_wheel1InstanceStruct *chartInstance, real_T c2_u[4],
   }
 
   c2_n = c2_a_sizes[1] - 1;
-  c2_i53 = c2_n;
-  for (c2_d_k = 1; c2_d_k <= c2_i53; c2_d_k++) {
+  c2_i45 = c2_n;
+  for (c2_d_k = 1; c2_d_k <= c2_i45; c2_d_k++) {
     c2_e_k = c2_d_k;
     c2_a_data[_SFD_EML_ARRAY_BOUNDS_CHECK("", c2_e_k, 1, c2_a_sizes[1], 1, 0) -
       1] = c2_a_data[_SFD_EML_ARRAY_BOUNDS_CHECK("", c2_e_k, 1, c2_a_sizes[1], 1,
@@ -1872,18 +1714,18 @@ static boolean_T c2_isfinite(SFc2_wheel1InstanceStruct *chartInstance, real_T
 {
   real_T c2_b_x;
   boolean_T c2_b_b;
-  boolean_T c2_b4;
+  boolean_T c2_b3;
   real_T c2_c_x;
   boolean_T c2_c_b;
-  boolean_T c2_b5;
+  boolean_T c2_b4;
   (void)chartInstance;
   c2_b_x = c2_x;
   c2_b_b = muDoubleScalarIsInf(c2_b_x);
-  c2_b4 = !c2_b_b;
+  c2_b3 = !c2_b_b;
   c2_c_x = c2_x;
   c2_c_b = muDoubleScalarIsNaN(c2_c_x);
-  c2_b5 = !c2_c_b;
-  return c2_b4 && c2_b5;
+  c2_b4 = !c2_c_b;
+  return c2_b3 && c2_b4;
 }
 
 static real_T c2_polyval(SFc2_wheel1InstanceStruct *chartInstance, real_T
@@ -1891,22 +1733,22 @@ static real_T c2_polyval(SFc2_wheel1InstanceStruct *chartInstance, real_T
 {
   real_T c2_y;
   real_T c2_nc;
+  boolean_T c2_b5;
   boolean_T c2_b6;
-  boolean_T c2_b7;
   real_T c2_b_nc;
-  int32_T c2_i54;
+  int32_T c2_i46;
   int32_T c2_k;
   real_T c2_b_k;
   (void)chartInstance;
   c2_nc = (real_T)c2_p_sizes[1];
-  c2_b6 = (c2_p_sizes[1] == 0);
-  c2_b7 = c2_b6;
-  if (!c2_b7) {
+  c2_b5 = (c2_p_sizes[1] == 0);
+  c2_b6 = c2_b5;
+  if (!c2_b6) {
     (real_T)_SFD_EML_ARRAY_BOUNDS_CHECK("", 1, 1, c2_p_sizes[1], 1, 0);
     c2_y = c2_p_data[0];
     c2_b_nc = c2_nc;
-    c2_i54 = (int32_T)(c2_b_nc + -1.0) - 1;
-    for (c2_k = 0; c2_k <= c2_i54; c2_k++) {
+    c2_i46 = (int32_T)(c2_b_nc + -1.0) - 1;
+    for (c2_k = 0; c2_k <= c2_i46; c2_k++) {
       c2_b_k = 2.0 + (real_T)c2_k;
       c2_y = c2_x * c2_y + c2_p_data[_SFD_EML_ARRAY_BOUNDS_CHECK("", (int32_T)
         c2_b_k, 1, c2_p_sizes[1], 1, 0) - 1];
@@ -1923,26 +1765,26 @@ static void c2_trim_leading_zeros(SFc2_wheel1InstanceStruct *chartInstance,
   int32_T c2_nx;
   int32_T c2_nymax;
   int32_T c2_tmp_sizes[2];
-  int32_T c2_iv2[2];
-  int32_T c2_i55;
-  int32_T c2_i56;
+  int32_T c2_iv1[2];
+  int32_T c2_i47;
+  int32_T c2_i48;
   int32_T c2_loop_ub;
-  int32_T c2_i57;
+  int32_T c2_i49;
   real_T c2_tmp_data[2];
-  int32_T c2_i58;
+  int32_T c2_i50;
+  boolean_T c2_b7;
   boolean_T c2_b8;
-  boolean_T c2_b9;
   int32_T c2_nlead0;
-  int32_T c2_i59;
+  int32_T c2_i51;
   int32_T c2_k;
   int32_T c2_ny;
   const mxArray *c2_y = NULL;
-  int32_T c2_iv3[2];
-  int32_T c2_i60;
-  int32_T c2_i61;
+  int32_T c2_iv2[2];
+  int32_T c2_i52;
+  int32_T c2_i53;
   int32_T c2_b_loop_ub;
-  int32_T c2_i62;
-  int32_T c2_i63;
+  int32_T c2_i54;
+  int32_T c2_i55;
   int32_T c2_b_ny;
   int32_T c2_b_k;
   int32_T c2_c_k;
@@ -1957,34 +1799,34 @@ static void c2_trim_leading_zeros(SFc2_wheel1InstanceStruct *chartInstance,
   }
 
   c2_tmp_sizes[0] = 1;
-  c2_iv2[0] = 1;
-  c2_iv2[1] = c2_nymax;
-  c2_tmp_sizes[1] = c2_iv2[1];
-  c2_i55 = c2_tmp_sizes[0];
-  c2_i56 = c2_tmp_sizes[1];
+  c2_iv1[0] = 1;
+  c2_iv1[1] = c2_nymax;
+  c2_tmp_sizes[1] = c2_iv1[1];
+  c2_i47 = c2_tmp_sizes[0];
+  c2_i48 = c2_tmp_sizes[1];
   c2_loop_ub = c2_nymax - 1;
-  for (c2_i57 = 0; c2_i57 <= c2_loop_ub; c2_i57++) {
-    c2_tmp_data[c2_i57] = 0.0;
+  for (c2_i49 = 0; c2_i49 <= c2_loop_ub; c2_i49++) {
+    c2_tmp_data[c2_i49] = 0.0;
   }
 
-  for (c2_i58 = 0; c2_i58 < 2; c2_i58++) {
-    c2_y_sizes[c2_i58] = c2_tmp_sizes[c2_i58];
+  for (c2_i50 = 0; c2_i50 < 2; c2_i50++) {
+    c2_y_sizes[c2_i50] = c2_tmp_sizes[c2_i50];
   }
 
-  c2_b8 = (c2_x_sizes[1] == 0);
+  c2_b7 = (c2_x_sizes[1] == 0);
   guard1 = false;
-  if (c2_b8) {
+  if (c2_b7) {
     guard1 = true;
   } else {
-    c2_b9 = (c2_x_sizes[1] == 1);
-    if (c2_b9) {
+    c2_b8 = (c2_x_sizes[1] == 1);
+    if (c2_b8) {
       guard1 = true;
     } else {
       c2_nlead0 = 0;
-      c2_i59 = c2_nymax;
+      c2_i51 = c2_nymax;
       c2_k = 1;
       exitg1 = false;
-      while ((exitg1 == false) && (c2_k <= c2_i59 - 1)) {
+      while ((exitg1 == false) && (c2_k <= c2_i51 - 1)) {
         _SFD_EML_ARRAY_BOUNDS_CHECK("", 1, 1, c2_x_sizes[1], 1, 0);
         if (c2_x_data[0] == 0.0) {
           c2_nlead0++;
@@ -2004,18 +1846,18 @@ static void c2_trim_leading_zeros(SFc2_wheel1InstanceStruct *chartInstance,
       }
 
       c2_tmp_sizes[0] = 1;
-      c2_iv3[0] = 1;
-      c2_iv3[1] = (int32_T)_SFD_NON_NEGATIVE_CHECK("", (real_T)c2_ny);
-      c2_tmp_sizes[1] = c2_iv3[1];
-      c2_i60 = c2_tmp_sizes[0];
-      c2_i61 = c2_tmp_sizes[1];
+      c2_iv2[0] = 1;
+      c2_iv2[1] = (int32_T)_SFD_NON_NEGATIVE_CHECK("", (real_T)c2_ny);
+      c2_tmp_sizes[1] = c2_iv2[1];
+      c2_i52 = c2_tmp_sizes[0];
+      c2_i53 = c2_tmp_sizes[1];
       c2_b_loop_ub = (int32_T)_SFD_NON_NEGATIVE_CHECK("", (real_T)c2_ny) - 1;
-      for (c2_i62 = 0; c2_i62 <= c2_b_loop_ub; c2_i62++) {
-        c2_tmp_data[c2_i62] = 0.0;
+      for (c2_i54 = 0; c2_i54 <= c2_b_loop_ub; c2_i54++) {
+        c2_tmp_data[c2_i54] = 0.0;
       }
 
-      for (c2_i63 = 0; c2_i63 < 2; c2_i63++) {
-        c2_y_sizes[c2_i63] = c2_tmp_sizes[c2_i63];
+      for (c2_i55 = 0; c2_i55 < 2; c2_i55++) {
+        c2_y_sizes[c2_i55] = c2_tmp_sizes[c2_i55];
       }
 
       c2_b_ny = c2_ny;
@@ -2033,7 +1875,7 @@ static void c2_trim_leading_zeros(SFc2_wheel1InstanceStruct *chartInstance,
   }
 }
 
-static const mxArray *c2_h_sf_marshallOut(void *chartInstanceVoid, void
+static const mxArray *c2_g_sf_marshallOut(void *chartInstanceVoid, void
   *c2_inData)
 {
   const mxArray *c2_mxArrayOutData = NULL;
@@ -2053,10 +1895,10 @@ static int32_T c2_g_emlrt_marshallIn(SFc2_wheel1InstanceStruct *chartInstance,
   const mxArray *c2_u, const emlrtMsgIdentifier *c2_parentId)
 {
   int32_T c2_y;
-  int32_T c2_i64;
+  int32_T c2_i56;
   (void)chartInstance;
-  sf_mex_import(c2_parentId, sf_mex_dup(c2_u), &c2_i64, 1, 6, 0U, 0, 0U, 0);
-  c2_y = c2_i64;
+  sf_mex_import(c2_parentId, sf_mex_dup(c2_u), &c2_i56, 1, 6, 0U, 0, 0U, 0);
+  c2_y = c2_i56;
   sf_mex_destroy(&c2_u);
   return c2_y;
 }
@@ -2134,10 +1976,10 @@ extern void utFree(void*);
 
 void sf_c2_wheel1_get_check_sum(mxArray *plhs[])
 {
-  ((real_T *)mxGetPr((plhs[0])))[0] = (real_T)(907017529U);
-  ((real_T *)mxGetPr((plhs[0])))[1] = (real_T)(412018949U);
-  ((real_T *)mxGetPr((plhs[0])))[2] = (real_T)(3074067306U);
-  ((real_T *)mxGetPr((plhs[0])))[3] = (real_T)(1930449140U);
+  ((real_T *)mxGetPr((plhs[0])))[0] = (real_T)(3020423367U);
+  ((real_T *)mxGetPr((plhs[0])))[1] = (real_T)(2853145447U);
+  ((real_T *)mxGetPr((plhs[0])))[2] = (real_T)(2649116608U);
+  ((real_T *)mxGetPr((plhs[0])))[3] = (real_T)(1872146927U);
 }
 
 mxArray *sf_c2_wheel1_get_autoinheritance_info(void)
@@ -2149,7 +1991,7 @@ mxArray *sf_c2_wheel1_get_autoinheritance_info(void)
     autoinheritanceFields);
 
   {
-    mxArray *mxChecksum = mxCreateString("PUxqZIusI2DNgitLYlrdjF");
+    mxArray *mxChecksum = mxCreateString("P5CCIf8hDRyX17mIRubbdD");
     mxSetField(mxAutoinheritanceInfo,0,"checksum",mxChecksum);
   }
 
@@ -2161,8 +2003,8 @@ mxArray *sf_c2_wheel1_get_autoinheritance_info(void)
     {
       mxArray *mxSize = mxCreateDoubleMatrix(1,2,mxREAL);
       double *pr = mxGetPr(mxSize);
-      pr[0] = (double)(2);
-      pr[1] = (double)(4);
+      pr[0] = (double)(4);
+      pr[1] = (double)(1);
       mxSetField(mxData,0,"size",mxSize);
     }
 
@@ -2180,7 +2022,7 @@ mxArray *sf_c2_wheel1_get_autoinheritance_info(void)
     {
       mxArray *mxSize = mxCreateDoubleMatrix(1,2,mxREAL);
       double *pr = mxGetPr(mxSize);
-      pr[0] = (double)(2);
+      pr[0] = (double)(1);
       pr[1] = (double)(1);
       mxSetField(mxData,1,"size",mxSize);
     }
@@ -2385,25 +2227,20 @@ static void chart_debug_initialization(SimStruct *S, unsigned int
         _SFD_CV_INIT_TRANS(0,0,NULL,NULL,0,NULL);
 
         /* Initialization of MATLAB Function Model Coverage */
-        _SFD_CV_INIT_EML(0,1,1,1,0,0,0,0,0,0,0);
-        _SFD_CV_INIT_EML_FCN(0,0,"eML_blk_kernel",0,-1,246);
-        _SFD_CV_INIT_EML_IF(0,1,0,67,84,108,130);
-
-        {
-          unsigned int dimVector[2];
-          dimVector[0]= 2;
-          dimVector[1]= 4;
-          _SFD_SET_DATA_COMPILED_PROPS(0,SF_DOUBLE,2,&(dimVector[0]),0,0,0,0.0,
-            1.0,0,0,(MexFcnForType)c2_c_sf_marshallOut,(MexInFcnForType)NULL);
-        }
+        _SFD_CV_INIT_EML(0,1,1,2,0,0,0,0,0,0,0);
+        _SFD_CV_INIT_EML_FCN(0,0,"eML_blk_kernel",0,-1,300);
+        _SFD_CV_INIT_EML_IF(0,1,0,67,80,104,126);
+        _SFD_CV_INIT_EML_IF(0,1,1,144,157,179,203);
 
         {
           unsigned int dimVector[1];
-          dimVector[0]= 2;
-          _SFD_SET_DATA_COMPILED_PROPS(1,SF_DOUBLE,1,&(dimVector[0]),0,0,0,0.0,
+          dimVector[0]= 4;
+          _SFD_SET_DATA_COMPILED_PROPS(0,SF_DOUBLE,1,&(dimVector[0]),0,0,0,0.0,
             1.0,0,0,(MexFcnForType)c2_b_sf_marshallOut,(MexInFcnForType)NULL);
         }
 
+        _SFD_SET_DATA_COMPILED_PROPS(1,SF_DOUBLE,0,NULL,0,0,0,0.0,1.0,0,0,
+          (MexFcnForType)c2_sf_marshallOut,(MexInFcnForType)NULL);
         _SFD_SET_DATA_COMPILED_PROPS(2,SF_DOUBLE,0,NULL,0,0,0,0.0,1.0,0,0,
           (MexFcnForType)c2_sf_marshallOut,(MexInFcnForType)c2_sf_marshallIn);
         _SFD_SET_DATA_COMPILED_PROPS(3,SF_DOUBLE,0,NULL,0,0,0,0.0,1.0,0,0,
@@ -2414,20 +2251,20 @@ static void chart_debug_initialization(SimStruct *S, unsigned int
           (MexFcnForType)c2_sf_marshallOut,(MexInFcnForType)c2_sf_marshallIn);
 
         {
+          real_T *c2_times;
           real_T *c2_td;
           real_T *c2_t;
           real_T *c2_dtd;
           real_T *c2_d2td;
-          real_T (*c2_array)[8];
-          real_T (*c2_times)[2];
+          real_T (*c2_array)[4];
           c2_d2td = (real_T *)ssGetOutputPortSignal(chartInstance->S, 3);
           c2_dtd = (real_T *)ssGetOutputPortSignal(chartInstance->S, 2);
           c2_t = (real_T *)ssGetInputPortSignal(chartInstance->S, 2);
           c2_td = (real_T *)ssGetOutputPortSignal(chartInstance->S, 1);
-          c2_times = (real_T (*)[2])ssGetInputPortSignal(chartInstance->S, 1);
-          c2_array = (real_T (*)[8])ssGetInputPortSignal(chartInstance->S, 0);
+          c2_times = (real_T *)ssGetInputPortSignal(chartInstance->S, 1);
+          c2_array = (real_T (*)[4])ssGetInputPortSignal(chartInstance->S, 0);
           _SFD_SET_DATA_VALUE_PTR(0U, *c2_array);
-          _SFD_SET_DATA_VALUE_PTR(1U, *c2_times);
+          _SFD_SET_DATA_VALUE_PTR(1U, c2_times);
           _SFD_SET_DATA_VALUE_PTR(2U, c2_td);
           _SFD_SET_DATA_VALUE_PTR(3U, c2_t);
           _SFD_SET_DATA_VALUE_PTR(4U, c2_dtd);
@@ -2444,7 +2281,7 @@ static void chart_debug_initialization(SimStruct *S, unsigned int
 
 static const char* sf_get_instance_specialization(void)
 {
-  return "tYqpoh9v1jkueVjwQwTOzE";
+  return "0EWKqsbh9SsfDlH6SNXztF";
 }
 
 static void sf_opaque_initialize_c2_wheel1(void *chartInstanceVar)
@@ -2617,10 +2454,10 @@ static void mdlSetWorkWidths_c2_wheel1(SimStruct *S)
   }
 
   ssSetOptions(S,ssGetOptions(S)|SS_OPTION_WORKS_WITH_CODE_REUSE);
-  ssSetChecksum0(S,(862317667U));
-  ssSetChecksum1(S,(3894109094U));
-  ssSetChecksum2(S,(2538974255U));
-  ssSetChecksum3(S,(2205369853U));
+  ssSetChecksum0(S,(2525253343U));
+  ssSetChecksum1(S,(364775676U));
+  ssSetChecksum2(S,(4127275173U));
+  ssSetChecksum3(S,(3233392324U));
   ssSetmdlDerivatives(S, NULL);
   ssSetExplicitFCSSCtrl(S,1);
   ssSupportsMultipleExecInstances(S,1);
