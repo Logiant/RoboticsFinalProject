@@ -144,6 +144,8 @@ position = [0;0];
 orientation = 0;
 lTot = 0;
 rTot = 0;
+mn=1;
+md=0.2;
 for n=1:min(length(leftAngle), length(rightAngle))
     %calculate new robot position
     
@@ -163,8 +165,21 @@ for n=1:min(length(leftAngle), length(rightAngle))
         position = [position(1) + dx; position(2) + dy];
         plot(position(1), position(2), '.r');
         
+        mp=mellonStorage(:,mn);
+        dtp=distance(position(1),position(2),mp(1),mp(2));
+        
+        if dtp<=md
+            atp=atan2(mp(2)-position(2),mp(1)-position(1));
+            
+        end
+        
         pause(.1);
     end
+    cp=sqrt((position(1)^2)+(position(2)^2));
+    T01=dhTrans(orientation,alph1,cp,d1);
+    %T1L=
+    %T1R=
+    T12=dhTrans(th2,alph2,a2,d2);
 end
 
 beep
